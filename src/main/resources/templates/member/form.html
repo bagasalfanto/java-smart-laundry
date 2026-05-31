@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Form Member - Smart Laundry')}"></head>
+<body class="app-shell bg-gray-50 text-gray-900" data-app-shell>
+    <div class="flex h-screen overflow-hidden">
+        <div th:replace="~{layout/sidebar :: sidebar}"></div>
+        <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+            <div data-sidebar-overlay class="app-sidebar-overlay fixed inset-0 z-[9] hidden bg-gray-900/50 lg:hidden"></div>
+            <div th:replace="~{layout/navbar :: navbar}"></div>
+            <main>
+                <div class="mx-auto max-w-[1536px] p-4 md:p-6">
+            <section class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wider text-cyan-700" th:text="${role}">ROLE</p>
+                    <h1 class="mt-1 text-3xl font-bold tracking-tight text-slate-950" th:text="${mode == 'create' ? 'Tambah Member' : 'Edit Member'}">Form Member</h1>
+                </div>
+                <a th:href="@{/members}" class="inline-flex h-10 items-center justify-center rounded-lg border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">Kembali</a>
+            </section>
+
+            <section class="max-w-3xl rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+                <form th:action="@{${formAction}}" th:object="${memberForm}" method="post" class="grid gap-5">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                    <div class="grid gap-2">
+                        <label for="nama" class="text-sm font-semibold text-slate-700">Nama</label>
+                        <input id="nama" type="text" th:field="*{nama}" required class="h-11 rounded-lg border border-slate-300 bg-white px-3 text-sm outline-none transition focus:border-cyan-700 focus:ring-4 focus:ring-cyan-100">
+                        <p class="text-sm font-medium text-red-600" th:if="${#fields.hasErrors('nama')}" th:errors="*{nama}"></p>
+                    </div>
+
+                    <div class="grid gap-2">
+                        <label for="noTelp" class="text-sm font-semibold text-slate-700">Nomor Telepon</label>
+                        <input id="noTelp" type="text" th:field="*{noTelp}" required class="h-11 rounded-lg border border-slate-300 bg-white px-3 text-sm outline-none transition focus:border-cyan-700 focus:ring-4 focus:ring-cyan-100">
+                        <p class="text-sm font-medium text-red-600" th:if="${#fields.hasErrors('noTelp')}" th:errors="*{noTelp}"></p>
+                    </div>
+
+                    <div class="grid gap-2">
+                        <label for="poin" class="text-sm font-semibold text-slate-700">Poin</label>
+                        <input id="poin" type="number" min="0" th:field="*{poin}" required class="h-11 rounded-lg border border-slate-300 bg-white px-3 text-sm outline-none transition focus:border-cyan-700 focus:ring-4 focus:ring-cyan-100">
+                        <p class="text-sm font-medium text-red-600" th:if="${#fields.hasErrors('poin')}" th:errors="*{poin}"></p>
+                    </div>
+
+                    <label class="inline-flex items-center gap-3 text-sm font-semibold text-slate-700">
+                        <input type="checkbox" th:field="*{member}" class="h-4 w-4 rounded border-slate-300 text-cyan-700 focus:ring-cyan-600">
+                        <span>Member aktif</span>
+                    </label>
+
+                    <div class="flex flex-wrap gap-3">
+                        <button type="submit" class="inline-flex h-10 items-center justify-center rounded-lg bg-cyan-700 px-4 text-sm font-bold text-white shadow-sm transition hover:bg-cyan-800">Simpan</button>
+                        <a th:href="@{/members}" class="inline-flex h-10 items-center justify-center rounded-lg border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">Batal</a>
+                    </div>
+                </form>
+            </section>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>

@@ -106,6 +106,14 @@ public class StaffManagementService {
 		userRepository.save(user);
 	}
 
+	@Transactional
+	public void delete(Long id) {
+		StaffProfile profile = findById(id);
+		User user = profile.getUser();
+		staffProfileRepository.delete(profile);
+		userRepository.delete(user);
+	}
+
 	private Integer normalizeShift(Integer jumlahShift) {
 		if (jumlahShift == null || jumlahShift < 0) {
 			return 0;

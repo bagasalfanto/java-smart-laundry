@@ -12,15 +12,11 @@
                 </div>
             </div>
 
-            <div th:if="${param.error}" class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
-                Username atau password salah.
-            </div>
-            <div th:if="${param.logout}" class="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
-                Logout berhasil.
-            </div>
-            <div th:if="${param.expired}" class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
-                Sesi berakhir. Silakan login kembali.
-            </div>
+            <!-- SweetAlert2 otomatis tampil berdasarkan parameter URL -->
+            <div th:if="${param.error}" id="__swal_error" style="display:none"></div>
+            <div th:if="${param.logout}" id="__swal_logout" style="display:none"></div>
+            <div th:if="${param.expired}" id="__swal_expired" style="display:none"></div>
+
 
             <form th:action="@{/login}" method="post" class="grid gap-4">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
@@ -40,4 +36,35 @@
         </section>
     </main>
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (document.getElementById('__swal_error')) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Login Gagal',
+                text: 'Username atau password yang kamu masukkan salah.',
+                confirmButtonColor: '#0e7490',
+                confirmButtonText: 'Coba Lagi'
+            });
+        }
+        if (document.getElementById('__swal_logout')) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Logout Berhasil',
+                text: 'Kamu telah berhasil keluar dari sistem.',
+                confirmButtonColor: '#0e7490',
+                timer: 2500,
+                timerProgressBar: true
+            });
+        }
+        if (document.getElementById('__swal_expired')) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Sesi Berakhir',
+                text: 'Sesi kamu telah berakhir. Silakan login kembali.',
+                confirmButtonColor: '#0e7490'
+            });
+        }
+    });
+</script>
 </html>

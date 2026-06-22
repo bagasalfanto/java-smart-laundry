@@ -13,12 +13,8 @@
 }
 
 @layer components {
-    .app-shell.is-sidebar-open .app-sidebar {
-        transform: translateX(0);
-    }
-
     .app-shell.is-sidebar-open .app-sidebar-overlay {
-        display: block;
+        display: block !important;
     }
 
     .app-sidebar {

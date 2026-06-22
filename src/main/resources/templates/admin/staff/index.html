@@ -17,8 +17,10 @@
                 <a th:href="@{/admin/staff/create}" class="inline-flex h-10 items-center justify-center rounded-lg bg-cyan-700 px-4 text-sm font-bold text-white shadow-sm transition hover:bg-cyan-800">Tambah Staff</a>
             </section>
 
-            <div th:if="${success}" class="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700" th:text="${success}"></div>
-            <div th:if="${error}" class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700" th:text="${error}"></div>
+            <!-- SweetAlert2 flash messages -->
+            <div th:if="${success}" id="__swal_success" th:data-msg="${success}" style="display:none"></div>
+            <div th:if="${error}" id="__swal_error" th:data-msg="${error}" style="display:none"></div>
+
 
             <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
                 <div class="overflow-x-auto">
@@ -43,11 +45,25 @@
                                 </td>
                                 <td class="px-4 py-4">
                                     <div class="flex flex-wrap gap-2">
-                                    <a th:href="@{/admin/staff/{id}/edit(id=${staff.id})}" class="inline-flex h-9 items-center rounded-md border border-slate-200 bg-white px-3 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">Edit</a>
-                                    <form th:if="${staff.user.active}" th:action="@{/admin/staff/{id}/deactivate(id=${staff.id})}" method="post">
-                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                                        <button type="submit" class="inline-flex h-9 items-center rounded-md bg-red-50 px-3 text-xs font-bold text-red-700 transition hover:bg-red-100">Nonaktifkan</button>
-                                    </form>
+                                        <a th:href="@{/admin/staff/{id}/edit(id=${staff.id})}" class="inline-flex h-9 items-center rounded-md border border-slate-200 bg-white px-3 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">Edit</a>
+
+                                        <form th:if="${staff.user.active}" th:action="@{/admin/staff/{id}/deactivate(id=${staff.id})}" method="post"
+                                              th:id="'deactivateForm-' + ${staff.id}">
+                                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                            <button type="button"
+                                                    class="inline-flex h-9 items-center rounded-md bg-amber-50 px-3 text-xs font-bold text-amber-700 transition hover:bg-amber-100"
+                                                    th:data-id="${staff.id}" th:data-nama="${staff.nama}"
+                                                    onclick="konfirmasiNonaktif(this.getAttribute('data-id'), this.getAttribute('data-nama'))">Nonaktifkan</button>
+                                        </form>
+
+                                        <form th:action="@{/admin/staff/{id}/delete(id=${staff.id})}" method="post"
+                                              th:id="'deleteForm-' + ${staff.id}">
+                                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                            <button type="button"
+                                                    class="inline-flex h-9 items-center rounded-md bg-red-600 px-3 text-xs font-bold text-white transition hover:bg-red-700"
+                                                    th:data-id="${staff.id}" th:data-nama="${staff.nama}"
+                                                    onclick="konfirmasiHapusStaff(this.getAttribute('data-id'), this.getAttribute('data-nama'))">Hapus</button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
@@ -63,4 +79,51 @@
         </div>
     </div>
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var elSuccess = document.getElementById('__swal_success');
+        var elError = document.getElementById('__swal_error');
+        if (elSuccess) {
+            Swal.fire({ icon: 'success', title: 'Berhasil!', text: elSuccess.getAttribute('data-msg'), confirmButtonColor: '#0e7490', timer: 2500, timerProgressBar: true });
+        }
+        if (elError) {
+            Swal.fire({ icon: 'error', title: 'Gagal!', text: elError.getAttribute('data-msg'), confirmButtonColor: '#0e7490' });
+        }
+    });
+
+    function konfirmasiNonaktif(staffId, namaStaff) {
+        Swal.fire({
+            title: 'Nonaktifkan Staff?',
+            html: 'Yakin ingin menonaktifkan staff <strong>' + namaStaff + '</strong>?<br>Staff tidak bisa login setelah dinonaktifkan.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d97706',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Ya, Nonaktifkan!',
+            cancelButtonText: 'Batal'
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                document.getElementById('deactivateForm-' + staffId).submit();
+            }
+        });
+    }
+
+    function konfirmasiHapusStaff(staffId, namaStaff) {
+        Swal.fire({
+            title: 'Hapus Staff Permanen?',
+            html: '<p>Kamu akan menghapus staff <strong>' + namaStaff + '</strong> secara permanen.</p><p class="mt-2 text-sm text-slate-500">Akun login staff ini akan ikut terhapus dan tidak dapat dipulihkan.</p>',
+            icon: 'error',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Ya, Hapus Permanen!',
+            cancelButtonText: 'Batal',
+            focusCancel: true
+        }).then(function(result) {
+            if (result.isConfirmed) {
+                document.getElementById('deleteForm-' + staffId).submit();
+            }
+        });
+    }
+</script>
 </html>

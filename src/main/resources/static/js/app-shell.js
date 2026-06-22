@@ -26,6 +26,18 @@
     function setSidebarOpen(open) {
       shell.classList.toggle("is-sidebar-open", open);
       document.body.classList.toggle("overflow-hidden", open && !desktopQuery.matches);
+      
+      const sidebar = shell.querySelector("[data-sidebar]");
+      if (sidebar) {
+        if (open) {
+          sidebar.classList.remove("-translate-x-full");
+          sidebar.classList.add("translate-x-0");
+        } else {
+          sidebar.classList.add("-translate-x-full");
+          sidebar.classList.remove("translate-x-0");
+        }
+      }
+      
       if (overlay) {
         overlay.classList.toggle("hidden", !open);
         overlay.classList.toggle("block", open);

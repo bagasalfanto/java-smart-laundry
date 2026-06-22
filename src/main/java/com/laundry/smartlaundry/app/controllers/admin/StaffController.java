@@ -100,6 +100,17 @@ public class StaffController {
 		return "redirect:/admin/staff";
 	}
 
+	@PostMapping("/{id}/delete")
+	public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+		try {
+			staffManagementService.delete(id);
+			redirectAttributes.addFlashAttribute("success", "Staff berhasil dihapus permanen");
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("error", "Gagal menghapus staff: " + e.getMessage());
+		}
+		return "redirect:/admin/staff";
+	}
+
 	private void validatePasswordRequired(StaffForm staffForm, BindingResult bindingResult) {
 		if (staffForm.getPassword() == null || staffForm.getPassword().isBlank()) {
 			bindingResult.rejectValue("password", "required", "Password wajib diisi");

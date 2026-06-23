@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Edit Order - Smart Laundry')}"></head>
+<body class="app-shell bg-gray-50 text-gray-900" data-app-shell>
+    <div class="flex h-screen overflow-hidden">
+        <div th:replace="~{layout/sidebar :: sidebar}"></div>
+        <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+            <div data-sidebar-overlay class="app-sidebar-overlay fixed inset-0 z-[9] hidden bg-gray-900/50 lg:hidden"></div>
+            <div th:replace="~{layout/navbar :: navbar}"></div>
+            <main>
+                <div class="mx-auto max-w-[800px] p-4 md:p-6">
+                    <section class="mb-6">
+                        <div class="flex items-center gap-4">
+                            <a th:href="@{/dashboard}" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-slate-500 shadow-sm transition hover:bg-slate-50 hover:text-slate-900">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                            </a>
+                            <div>
+                                <h1 class="text-2xl font-bold tracking-tight text-slate-950">Edit Order</h1>
+                                <p class="mt-1 text-sm text-slate-500">Perbarui detail, status layanan, dan pembayaran.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div th:if="${errorMessage}" class="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600">
+                        <span th:text="${errorMessage}"></span>
+                    </div>
+
+                    <form th:action="@{/orders/{id}(id=${transaksiId})}" th:object="${orderUpdateRequest}" method="post" class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                        
+                        <div class="mb-6">
+                            <h2 class="text-lg font-bold text-slate-900">Data Pelanggan</h2>
+                        </div>
+
+                        <div class="grid gap-6 sm:grid-cols-2">
+                            <div>
+                                <label for="namaCustomer" class="mb-2 block text-sm font-semibold text-slate-700">Nama Customer</label>
+                                <input type="text" id="namaCustomer" th:field="*{namaCustomer}" class="block w-full rounded-xl border-0 py-2.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm" required>
+                                <p th:if="${#fields.hasErrors('namaCustomer')}" th:errors="*{namaCustomer}" class="mt-2 text-sm text-red-600"></p>
+                            </div>
+
+                            <div>
+                                <label for="noHp" class="mb-2 block text-sm font-semibold text-slate-700">Nomor HP</label>
+                                <input type="tel" id="noHp" th:field="*{noHp}" class="block w-full rounded-xl border-0 py-2.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm" required>
+                                <p th:if="${#fields.hasErrors('noHp')}" th:errors="*{noHp}" class="mt-2 text-sm text-red-600"></p>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 flex items-center gap-3">
+                            <input type="checkbox" id="isMember" th:field="*{member}" class="h-5 w-5 rounded border-slate-300 text-cyan-600 focus:ring-cyan-600">
+                            <label for="isMember" class="text-sm font-medium text-slate-700">Pelanggan adalah Member (Mendapat diskon 10%)</label>
+                        </div>
+
+                        <hr class="my-8 border-slate-200">
+
+                        <div class="mb-6">
+                            <h2 class="text-lg font-bold text-slate-900">Detail Layanan</h2>
+                        </div>
+
+                        <div class="grid gap-6 sm:grid-cols-2">
+                            <div>
+                                <label for="layananId" class="mb-2 block text-sm font-semibold text-slate-700">Jenis Layanan</label>
+                                <select id="layananId" th:field="*{layananId}" class="block w-full rounded-xl border-0 py-2.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm" required>
+                                    <option value="" disabled>-- Pilih Layanan --</option>
+                                    <option th:each="layanan : ${layanans}" th:value="${layanan.id}" th:text="${layanan.namaPaket + ' (Rp ' + layanan.hargaPerKg + '/kg)'}"></option>
+                                </select>
+                                <p th:if="${#fields.hasErrors('layananId')}" th:errors="*{layananId}" class="mt-2 text-sm text-red-600"></p>
+                            </div>
+
+                            <div>
+                                <label for="beratKg" class="mb-2 block text-sm font-semibold text-slate-700">Berat Laundry (kg)</label>
+                                <input type="number" id="beratKg" th:field="*{beratKg}" step="0.1" min="0.1" class="block w-full rounded-xl border-0 py-2.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm" required>
+                                <p th:if="${#fields.hasErrors('beratKg')}" th:errors="*{beratKg}" class="mt-2 text-sm text-red-600"></p>
+                            </div>
+                        </div>
+
+                        <hr class="my-8 border-slate-200">
+
+                        <div class="mb-6">
+                            <h2 class="text-lg font-bold text-slate-900">Status Transaksi</h2>
+                        </div>
+
+                        <div class="grid gap-6 sm:grid-cols-2">
+                            <div>
+                                <label for="orderStatus" class="mb-2 block text-sm font-semibold text-slate-700">Status Order</label>
+                                <select id="orderStatus" th:field="*{orderStatus}" class="block w-full rounded-xl border-0 py-2.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm" required>
+                                    <option value="ANTRIAN">Antrian</option>
+                                    <option value="PROSES">Proses</option>
+                                    <option value="SELESAI">Selesai</option>
+                                </select>
+                                <p th:if="${#fields.hasErrors('orderStatus')}" th:errors="*{orderStatus}" class="mt-2 text-sm text-red-600"></p>
+                            </div>
+
+                            <div>
+                                <label for="paymentStatus" class="mb-2 block text-sm font-semibold text-slate-700">Status Pembayaran</label>
+                                <select id="paymentStatus" th:field="*{paymentStatus}" class="block w-full rounded-xl border-0 py-2.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm" required>
+                                    <option value="BELUM_LUNAS">Belum Lunas</option>
+                                    <option value="LUNAS">Lunas</option>
+                                </select>
+                                <p th:if="${#fields.hasErrors('paymentStatus')}" th:errors="*{paymentStatus}" class="mt-2 text-sm text-red-600"></p>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 flex justify-end gap-3">
+                            <a th:href="@{/dashboard}" class="inline-flex items-center justify-center rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50">Batal</a>
+                            <button type="submit" class="inline-flex items-center justify-center rounded-full bg-cyan-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600">Update Order</button>
+                        </div>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>

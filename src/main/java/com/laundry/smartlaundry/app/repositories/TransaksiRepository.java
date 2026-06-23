@@ -30,4 +30,8 @@ public interface TransaksiRepository extends JpaRepository<Transaksi, Long> {
 	long countByOrderStatus(OrderStatus orderStatus);
 
 	long countByPaymentStatus(PaymentStatus paymentStatus);
+
+	List<Transaksi> findTop10ByOrderByCreatedAtDesc();
+
+	List<Transaksi> findAllByOrderByCreatedAtDesc();
 }

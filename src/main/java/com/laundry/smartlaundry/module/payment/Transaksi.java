@@ -21,11 +21,11 @@ import com.laundry.smartlaundry.module.servicecatalog.Layanan;
 public class Transaksi {
 
     /**
-     * Aturan bisnis: setiap member mendapat diskon 10%.
+     * Aturan bisnis: setiap member mendapat diskon 5%.
      * Dibuat sebagai konstanta agar mudah diubah di satu tempat saja.
      * Contoh: ganti ke 0.15 kalau diskon dinaikkan menjadi 15%.
      */
-    public static final double DISKON_MEMBER = 0.10; // 10%
+    public static final double DISKON_MEMBER = 0.05; // 5%
 
     // --- Atribut ---
     private String idOrder;       // nomor invoice, contoh: "INV-001"

@@ -92,11 +92,7 @@ public class BillingManager {
         trx.prosesPembayaran();        // ubah status menjadi LUNAS
         riwayatLunas.add(trx);         // SIMPAN TRANSAKSI LUNAS ke riwayat
 
-        // Bonus: member mendapat 1 poin untuk setiap Rp10.000 yang dibayar.
-        if (trx.getPelanggan().cekStatusMember()) {
-            int poinDidapat = (int) (trx.getTotalBayar() / 10000);
-            trx.getPelanggan().tambahPoin(poinDidapat);
-        }
+
 
         System.out.println("[BILLING] Pembayaran " + trx.getIdOrder()
                 + " LUNAS dan tersimpan di riwayat.");

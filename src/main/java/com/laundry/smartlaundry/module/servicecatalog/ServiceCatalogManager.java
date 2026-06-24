@@ -126,6 +126,10 @@ public class ServiceCatalogManager {
     // HELPER METHODS
     // ==========================================
 
+    public Optional<Layanan> getLayananById(String idLayanan) {
+        return cariLayananById(idLayanan);
+    }
+
     /**
      * Mencari layanan berdasarkan ID-nya di dalam list.
      * 

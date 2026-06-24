@@ -33,6 +33,25 @@ public class LayananController {
         return "layanan/index";
     }
 
+    @GetMapping("/create")
+    public String create(Model model) {
+        model.addAttribute("layanan", new Layanan("", "", 0.0, 1));
+        model.addAttribute("mode", "create");
+        model.addAttribute("formAction", "/layanan/add");
+        model.addAttribute("currentPath", "/layanan");
+        return "layanan/form";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String edit(@PathVariable String id, Model model) {
+        Layanan lay = manager.getLayananById(id).orElse(new Layanan("", "", 0.0, 1));
+        model.addAttribute("layanan", lay);
+        model.addAttribute("mode", "edit");
+        model.addAttribute("formAction", "/layanan/update");
+        model.addAttribute("currentPath", "/layanan");
+        return "layanan/form";
+    }
+
     @PostMapping("/add")
     public String addLayanan(@RequestParam String idLayanan,
                              @RequestParam String namaPaket,

@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Daftar Order - Smart Laundry')}"></head>
+<body class="app-shell bg-gray-50 text-gray-900" data-app-shell>
+    <div class="flex h-screen overflow-hidden">
+        <div th:replace="~{layout/sidebar :: sidebar}"></div>
+        <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+            <div data-sidebar-overlay class="app-sidebar-overlay fixed inset-0 z-[9] hidden bg-gray-900/50 lg:hidden"></div>
+            <div th:replace="~{layout/navbar :: navbar}"></div>
+            <main>
+                <div class="mx-auto max-w-[1536px] p-4 md:p-6">
+                    <!-- SweetAlert2 flash messages -->
+                    <div th:if="${successMessage}" id="__swal_success" th:data-msg="${successMessage}" style="display:none"></div>
+                    <div th:if="${errorMessage}" id="__swal_error" th:data-msg="${errorMessage}" style="display:none"></div>
+
+
+                    <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <h1 class="text-2xl font-bold tracking-tight text-slate-950">Daftar Order</h1>
+                            <p class="mt-1 text-sm text-slate-500">Kelola transaksi pelanggan dan buat order baru.</p>
+                        </div>
+                        
+                        <div class="flex items-center gap-3">
+                            <!-- Form Laporan -->
+                            <form th:action="@{/reports/generate}" method="post" id="reportForm" class="relative inline-block text-left">
+                                <input type="hidden" name="filter" id="reportFilterValue" value="hari">
+                                
+                                <button type="button" id="reportDropdownButton" class="inline-flex items-center justify-center gap-x-1.5 rounded-full bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-500"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                                    Unduh Laporan
+                                    <svg class="-mr-1 h-5 w-5 text-slate-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+
+                                <div id="reportDropdownMenu" class="absolute right-0 z-20 mt-2 w-48 origin-top-right rounded-xl bg-white shadow-lg ring-1 ring-slate-900/5 focus:outline-none hidden transition-all">
+                                    <div class="py-1">
+                                        <button type="button" data-filter="hari" class="report-option block w-full text-left px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-cyan-600 transition-colors">Hari Ini</button>
+                                        <button type="button" data-filter="minggu" class="report-option block w-full text-left px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-cyan-600 transition-colors">Minggu Ini</button>
+                                        <button type="button" data-filter="bulan" class="report-option block w-full text-left px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-cyan-600 transition-colors">Bulan Ini</button>
+                                        <button type="button" data-filter="tahun" class="report-option block w-full text-left px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-cyan-600 transition-colors">Tahun Ini</button>
+                                    </div>
+                                </div>
+                            </form>
+                            
+                            <!-- Tombol Tambah Order -->
+                            <a th:href="@{/orders/new}" class="inline-flex items-center justify-center rounded-full bg-cyan-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500">
+                                Tambah Order
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <form th:action="@{/orders}" method="get" class="flex w-full max-w-sm items-center gap-2">
+                            <input type="text" name="search" th:value="${search}" placeholder="Cari invoice atau nama pelanggan..." class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 shadow-sm">
+                            <button type="submit" class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-slate-800 shadow-sm transition-colors">Cari</button>
+                            <a th:if="${search != null and !search.isEmpty()}" th:href="@{/orders}" class="rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 shadow-sm transition-colors" title="Reset">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            </a>
+                        </form>
+                    </div>
+
+                    <section class="mt-8">
+                        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left text-sm text-slate-600">
+                                    <thead class="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500">
+                                        <tr>
+                                            <th class="px-4 py-3 font-semibold">Invoice</th>
+                                            <th class="px-4 py-3 font-semibold">Pelanggan</th>
+                                            <th class="px-4 py-3 font-semibold">Layanan</th>
+                                            <th class="px-4 py-3 font-semibold">Status Order</th>
+                                            <th class="px-4 py-3 font-semibold">Pembayaran</th>
+                                            <th class="px-4 py-3 font-semibold text-right">Total</th>
+                                            <th class="px-4 py-3 font-semibold text-center">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-200">
+                                        <tr th:each="order : ${orders}" class="hover:bg-slate-50">
+                                            <td class="whitespace-nowrap px-4 py-3 font-medium text-slate-900" th:text="${order.invoiceNumber}">INV-000</td>
+                                            <td class="px-4 py-3">
+                                                <div class="font-medium text-slate-900" th:text="${order.pelanggan.nama}">Nama</div>
+                                                <div class="text-xs text-slate-500" th:text="${order.pelanggan.noTelp}">08123</div>
+                                            </td>
+                                            <td class="px-4 py-3">
+                                                <div th:text="${order.layanan.namaPaket}">Paket</div>
+                                                <div class="text-xs text-slate-500" th:text="${order.berat + ' kg'}">1 kg</div>
+                                            </td>
+                                            <td class="px-4 py-3">
+                                                <span th:if="${order.orderStatus.name() == 'ANTRIAN'}" class="inline-flex rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-800">Antrian</span>
+                                                <span th:if="${order.orderStatus.name() == 'PROSES_CUCI'}" class="inline-flex rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">Proses Cuci</span>
+                                                <span th:if="${order.orderStatus.name() == 'PROSES_SETRIKA'}" class="inline-flex rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-800">Proses Setrika</span>
+                                                <span th:if="${order.orderStatus.name() == 'SELESAI'}" class="inline-flex rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-800">Selesai</span>
+                                            </td>
+                                            <td class="px-4 py-3">
+                                                <span th:if="${order.paymentStatus.name() == 'BELUM_LUNAS'}" class="inline-flex rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">Belum Lunas</span>
+                                                <span th:if="${order.paymentStatus.name() == 'LUNAS'}" class="inline-flex rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-800">Lunas</span>
+                                            </td>
+                                            <td class="whitespace-nowrap px-4 py-3 text-right font-medium text-slate-900" th:text="${'Rp ' + #numbers.formatDecimal(order.totalBayar, 0, 'COMMA', 0, 'POINT')}">Rp 0</td>
+                                            <td class="px-4 py-3 text-center">
+                                                <div class="flex items-center justify-center gap-2">
+                                                    <a th:href="@{/orders/{id}/edit(id=${order.id})}" class="text-cyan-600 hover:text-cyan-800 hover:underline">Edit</a>
+                                                    <form th:action="@{/orders/{id}/delete(id=${order.id})}" method="post" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus order ini secara permanen?');">
+                                                        <button type="submit" class="text-red-600 hover:text-red-800 hover:underline">Delete</button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr th:if="${#lists.isEmpty(orders)}">
+                                            <td colspan="7" class="px-4 py-8 text-center text-slate-500">Belum ada order.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elSuccess = document.getElementById('__swal_success');
+            var elError = document.getElementById('__swal_error');
+            if (elSuccess) {
+                Swal.fire({ icon: 'success', title: 'Berhasil!', text: elSuccess.getAttribute('data-msg'), confirmButtonColor: '#0e7490', timer: 2500, timerProgressBar: true });
+            }
+            if (elError) {
+                Swal.fire({ icon: 'error', title: 'Gagal!', text: elError.getAttribute('data-msg'), confirmButtonColor: '#0e7490' });
+            }
+        });
+    </script>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const reportBtn = document.getElementById('reportDropdownButton');
+        const reportMenu = document.getElementById('reportDropdownMenu');
+        const reportOptions = document.querySelectorAll('.report-option');
+        const reportFilterValue = document.getElementById('reportFilterValue');
+        const reportForm = document.getElementById('reportForm');
+
+        if(reportBtn && reportMenu) {
+            reportBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                reportMenu.classList.toggle('hidden');
+            });
+
+            document.addEventListener('click', (e) => {
+                if(!reportForm.contains(e.target)) {
+                    reportMenu.classList.add('hidden');
+                }
+            });
+
+            reportOptions.forEach(opt => {
+                opt.addEventListener('click', function() {
+                    reportFilterValue.value = this.getAttribute('data-filter');
+                    reportMenu.classList.add('hidden');
+                    reportForm.submit();
+                });
+            });
+        }
+    });
+</script>
+</html>

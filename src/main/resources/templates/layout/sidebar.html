@@ -61,16 +61,16 @@
                             <svg th:classappend="${#strings.startsWith(currentPath, '/inventory')} ? ' menu-item-icon-active' : ' menu-item-icon-inactive'" class="menu-item-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M4.25 7C4.25 5.48122 5.48122 4.25 7 4.25H17C18.5188 4.25 19.75 5.48122 19.75 7V17C19.75 18.5188 18.5188 19.75 17 19.75H7C5.48122 19.75 4.25 18.5188 4.25 17V7ZM7 5.75C6.30964 5.75 5.75 6.30964 5.75 7V17C5.75 17.6904 6.30964 18.25 7 18.25H17C17.6904 18.25 18.25 17.6904 18.25 17V7C18.25 6.30964 17.6904 5.75 17 5.75H7ZM8.25 9C8.25 8.58579 8.58579 8.25 9 8.25H15C15.4142 8.25 15.75 8.58579 15.75 9C15.75 9.41421 15.4142 9.75 15 9.75H9C8.58579 9.75 8.25 9.41421 8.25 9ZM8.25 12C8.25 11.5858 8.58579 11.25 9 11.25H15C15.4142 11.25 15.75 11.5858 15.75 12C15.75 12.4142 15.4142 12.75 15 12.75H9C8.58579 12.75 8.25 12.4142 8.25 12ZM8.25 15C8.25 14.5858 8.58579 14.25 9 14.25H12C12.4142 14.25 12.75 14.5858 12.75 15C12.75 15.4142 12.4142 15.75 12 15.75H9C8.58579 15.75 8.25 15.4142 8.25 15Z" fill="currentColor"></path>
                             </svg>
-                            <span class="menu-item-text">Inventaris</span>
+                            <span class="menu-item-text">St</span>
                         </a>
                     </li>
                     <li>
-                        <a th:href="@{/reports}" th:classappend="${#strings.startsWith(currentPath, '/reports')} ? ' menu-item-active' : ' menu-item-inactive'" class="menu-item group">
-                            <svg th:classappend="${#strings.startsWith(currentPath, '/reports')} ? ' menu-item-icon-active' : ' menu-item-icon-inactive'" class="menu-item-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M14 2H6C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V8L14 2ZM13 3.5V8H18.5L13 3.5ZM18 20H6V4H11V9H18V20ZM8 12H16V14H8V12ZM8 16H13V18H8V16Z" fill="currentColor"></path>
+                        <span class="menu-item menu-item-disabled group">
+                            <svg class="menu-item-icon menu-item-icon-disabled" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM3.5 12C3.5 7.30558 7.30558 3.5 12 3.5C16.6944 3.5 20.5 7.30558 20.5 12C20.5 16.6944 16.6944 20.5 12 20.5C7.30558 20.5 3.5 16.6944 3.5 12ZM12.75 7C12.75 6.58579 12.4142 6.25 12 6.25C11.5858 6.25 11.25 6.58579 11.25 7V12C11.25 12.246 11.3712 12.476 11.5721 12.6099L15.3221 15.1099C15.6664 15.3395 16.1313 15.2464 16.3609 14.902C16.5905 14.5577 16.4975 14.0928 16.1531 13.8633L12.75 11.5945V7Z" fill="currentColor"></path>
                             </svg>
-                            <span class="menu-item-text">Laporan</span>
-                        </a>
+                            <span class="menu-item-text">Activity Log</span>
+                        </span>
                     </li>
                 </ul>
             </div>
@@ -93,7 +93,7 @@
                         </a>
                     </li>
                     <li>
-                        <a th:href="@{/orders/new}" th:classappend="${#strings.startsWith(currentPath, '/orders')} ? ' menu-item-active' : ' menu-item-inactive'" class="menu-item group">
+                        <a th:href="@{/orders}" th:classappend="${#strings.startsWith(currentPath, '/orders')} ? ' menu-item-active' : ' menu-item-inactive'" class="menu-item group">
                             <svg th:classappend="${#strings.startsWith(currentPath, '/orders')} ? ' menu-item-icon-active' : ' menu-item-icon-inactive'" class="menu-item-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M3.25 5.5C3.25 4.25736 4.25736 3.25 5.5 3.25H18.5C19.7426 3.25 20.75 4.25736 20.75 5.5V18.5C20.75 19.7426 19.7426 20.75 18.5 20.75H5.5C4.25736 20.75 3.25 19.7426 3.25 18.5V5.5ZM5.5 4.75C5.08579 4.75 4.75 5.08579 4.75 5.5V18.5C4.75 18.9142 5.08579 19.25 5.5 19.25H18.5C18.9142 19.25 19.25 18.9142 19.25 18.5V5.5C19.25 5.08579 18.9142 4.75 18.5 4.75H5.5ZM7.25 8C7.25 7.58579 7.58579 7.25 8 7.25H16C16.4142 7.25 16.75 7.58579 16.75 8C16.75 8.41421 16.4142 8.75 16 8.75H8C7.58579 8.75 7.25 8.41421 7.25 8ZM7.25 12C7.25 11.5858 7.58579 11.25 8 11.25H16C16.4142 11.25 16.75 11.5858 16.75 12C16.75 12.4142 16.4142 12.75 16 12.75H8C7.58579 12.75 7.25 12.4142 7.25 12ZM7.25 16C7.25 15.5858 7.58579 15.25 8 15.25H12C12.4142 15.25 12.75 15.5858 12.75 16C12.75 16.4142 12.4142 16.75 12 16.75H8C7.58579 16.75 7.25 16.4142 7.25 16Z" fill="currentColor"></path>
                             </svg>
@@ -105,7 +105,7 @@
                             <svg th:classappend="${#strings.startsWith(currentPath, '/workflow')} ? ' menu-item-icon-active' : ' menu-item-icon-inactive'" class="menu-item-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M14 2H6C4.89543 2 4 2.89543 4 4V20C4 21.1046 4.89543 22 6 22H18C19.1046 22 20 21.1046 20 20V8L14 2ZM13 3.5V8H18.5L13 3.5ZM18 20H6V4H11V9H18V20ZM8 12H16V14H8V12ZM8 16H13V18H8V16Z" fill="currentColor"></path>
                             </svg>
-                            <span class="menu-item-text">Workflow</span>
+                            <span class="menu-item-text">Process</span>
                         </a>
                     </li>
                     <li>

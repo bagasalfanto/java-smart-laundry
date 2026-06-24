@@ -11,7 +11,7 @@
                 <div class="mx-auto max-w-[800px] p-4 md:p-6">
                     <section class="mb-6">
                         <div class="flex items-center gap-4">
-                            <a th:href="@{/dashboard}" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-slate-500 shadow-sm transition hover:bg-slate-50 hover:text-slate-900">
+                            <a th:href="@{/orders}" class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-slate-500 shadow-sm transition hover:bg-slate-50 hover:text-slate-900">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                             </a>
                             <div>
@@ -35,20 +35,38 @@
                         <div class="grid gap-6 sm:grid-cols-2">
                             <div>
                                 <label for="namaCustomer" class="mb-2 block text-sm font-semibold text-slate-700">Nama Customer</label>
-                                <input type="text" id="namaCustomer" th:field="*{namaCustomer}" class="block w-full rounded-xl border-0 py-2.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm" placeholder="Contoh: Budi Santoso" required>
+                                <div class="relative">
+                                    <input type="text" id="namaCustomer" th:field="*{namaCustomer}" autocomplete="off" class="block w-full rounded-xl border-0 py-2.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm" placeholder="Contoh: Budi Santoso" required>
+                                    
+                                    <div id="autocompleteDropdown" class="absolute left-0 right-0 top-full z-10 mt-1 hidden max-h-60 overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-lg">
+                                        <ul id="autocompleteList" class="py-2 text-sm text-slate-700">
+                                            <li th:each="m : ${members}" class="autocomplete-item cursor-pointer px-4 py-2 hover:bg-slate-50" th:data-nama="${m.nama}" th:data-hp="${m.noTelp}">
+                                                <div class="font-bold text-slate-900" th:text="${m.nama}"></div>
+                                                <div class="text-xs text-slate-500" th:text="${m.noTelp}"></div>
+                                            </li>
+                                            <li id="autocompleteEmpty" class="hidden px-4 py-3 text-center text-slate-500 italic">Tidak ditemukan</li>
+                                        </ul>
+                                    </div>
+                                </div>
                                 <p th:if="${#fields.hasErrors('namaCustomer')}" th:errors="*{namaCustomer}" class="mt-2 text-sm text-red-600"></p>
                             </div>
 
                             <div>
                                 <label for="noHp" class="mb-2 block text-sm font-semibold text-slate-700">Nomor HP</label>
-                                <input type="tel" id="noHp" th:field="*{noHp}" class="block w-full rounded-xl border-0 py-2.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm" placeholder="Contoh: 08123456789" required>
+                                <input type="tel" id="noHp" th:field="*{noHp}" class="block w-full rounded-xl border-0 py-2.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm bg-slate-50" placeholder="Contoh: 08123456789" required>
                                 <p th:if="${#fields.hasErrors('noHp')}" th:errors="*{noHp}" class="mt-2 text-sm text-red-600"></p>
                             </div>
                         </div>
 
-                        <div class="mt-6 flex items-center gap-3">
-                            <input type="checkbox" id="isMember" th:field="*{member}" class="h-5 w-5 rounded border-slate-300 text-cyan-600 focus:ring-cyan-600">
-                            <label for="isMember" class="text-sm font-medium text-slate-700">Pelanggan adalah Member (Mendapat diskon 10%)</label>
+                        <input type="hidden" id="isMember" th:field="*{member}" />
+                        <div id="memberBadge" class="mt-6 hidden items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-800 shadow-sm">
+                            <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold">🎉 Pelanggan ini merupakan Membership Terdaftar</p>
+                                <p class="text-xs text-emerald-600 mt-0.5">Otomatis mendapatkan diskon spesial sebesar 5% pada transaksi ini.</p>
+                            </div>
                         </div>
 
                         <hr class="my-8 border-slate-200">
@@ -75,7 +93,7 @@
                         </div>
 
                         <div class="mt-8 flex justify-end gap-3">
-                            <a th:href="@{/dashboard}" class="inline-flex items-center justify-center rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50">Batal</a>
+                            <a th:href="@{/orders}" class="inline-flex items-center justify-center rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50">Batal</a>
                             <button type="submit" class="inline-flex items-center justify-center rounded-full bg-cyan-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-600">Simpan Order</button>
                         </div>
                     </form>
@@ -84,4 +102,88 @@
         </div>
     </div>
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const namaInput = document.getElementById('namaCustomer');
+        const hpInput = document.getElementById('noHp');
+        const isMemberInput = document.getElementById('isMember');
+        const memberBadge = document.getElementById('memberBadge');
+        const dropdown = document.getElementById('autocompleteDropdown');
+        const listItems = document.querySelectorAll('.autocomplete-item');
+        const emptyMsg = document.getElementById('autocompleteEmpty');
+
+        const checkMemberStatus = (nameVal) => {
+            let found = false;
+            listItems.forEach(item => {
+                if (item.getAttribute('data-nama') === nameVal) {
+                    found = true;
+                }
+            });
+            isMemberInput.value = found ? 'true' : 'false';
+            if (found) {
+                memberBadge.classList.remove('hidden');
+                memberBadge.classList.add('flex');
+            } else {
+                memberBadge.classList.add('hidden');
+                memberBadge.classList.remove('flex');
+            }
+        };
+
+        if (namaInput.value) checkMemberStatus(namaInput.value.trim());
+
+        namaInput.addEventListener('input', function() {
+            const val = this.value.trim().toLowerCase();
+            let hasVisibleItem = false;
+            
+            if (val.length > 0) {
+                dropdown.classList.remove('hidden');
+                listItems.forEach(item => {
+                    const itemNama = item.getAttribute('data-nama').toLowerCase();
+                    const itemHp = item.getAttribute('data-hp').toLowerCase();
+                    if (itemNama.includes(val) || itemHp.includes(val)) {
+                        item.classList.remove('hidden');
+                        hasVisibleItem = true;
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                });
+                
+                if (hasVisibleItem) {
+                    emptyMsg.classList.add('hidden');
+                } else {
+                    emptyMsg.classList.remove('hidden');
+                }
+            } else {
+                dropdown.classList.add('hidden');
+            }
+
+            checkMemberStatus(this.value.trim());
+        });
+
+        listItems.forEach(item => {
+            item.addEventListener('click', function() {
+                namaInput.value = this.getAttribute('data-nama');
+                hpInput.value = this.getAttribute('data-hp');
+                dropdown.classList.add('hidden');
+                checkMemberStatus(namaInput.value.trim());
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!namaInput.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+
+        namaInput.addEventListener('focus', function() {
+            if (this.value.trim().length > 0) {
+                this.dispatchEvent(new Event('input'));
+            } else {
+                dropdown.classList.remove('hidden');
+                listItems.forEach(item => item.classList.remove('hidden'));
+                emptyMsg.classList.add('hidden');
+            }
+        });
+    });
+</script>
 </html>

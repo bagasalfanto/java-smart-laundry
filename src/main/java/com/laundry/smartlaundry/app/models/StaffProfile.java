@@ -46,7 +46,7 @@ public class StaffProfile {
 	public void inputOrder(Transaksi transaksiBaru, List<Inventaris> bahanBakuYangDipakai) {
 		System.out.println("Memproses pesanan baru: " + transaksiBaru.getInvoiceNumber());
 		for (Inventaris bahan : bahanBakuYangDipakai) {
-			bahan.kurangiStok(1); // Asumsi 1 pesanan mengurangi 1 satuan bahan
+			bahan.kurangiStok(java.math.BigDecimal.ONE); // Asumsi 1 pesanan mengurangi 1 satuan bahan
 		}
 	}
 

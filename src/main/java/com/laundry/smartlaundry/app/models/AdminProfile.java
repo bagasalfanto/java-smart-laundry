@@ -43,7 +43,7 @@ public class AdminProfile {
 	private LocalDateTime updatedAt;
 
 	// --- PBO Methods ---
-	public void kelolaStokBahan(Inventaris barang, String aksi, int jumlah) {
+	public void kelolaStokBahan(Inventaris barang, String aksi, java.math.BigDecimal jumlah) {
 		if (aksi.equalsIgnoreCase("TAMBAH")) {
 			barang.tambahStok(jumlah);
 		} else if (aksi.equalsIgnoreCase("KURANG")) {

@@ -29,7 +29,9 @@
                             <p class="text-sm font-semibold text-slate-500">Staff Aktif</p>
                             <p class="mt-3 text-3xl font-bold tracking-tight text-slate-950" th:text="${summary.activeStaff()}">0</p>
                         </div>
-                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-50 text-lg font-bold text-cyan-700">S</div>
+                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-50 text-cyan-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
+                        </div>
                     </div>
                     <p class="mt-4 text-sm text-slate-500"><span th:text="${summary.totalStaff()}">0</span> total staff terdaftar</p>
                 </article>
@@ -40,7 +42,9 @@
                             <p class="text-sm font-semibold text-slate-500">Member Aktif</p>
                             <p class="mt-3 text-3xl font-bold tracking-tight text-slate-950" th:text="${summary.activeMembers()}">0</p>
                         </div>
-                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-lg font-bold text-emerald-700">M</div>
+                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        </div>
                     </div>
                     <p class="mt-4 text-sm text-slate-500"><span th:text="${summary.totalCustomers()}">0</span> total pelanggan</p>
                 </article>
@@ -51,7 +55,9 @@
                             <p class="text-sm font-semibold text-slate-500">Layanan Aktif</p>
                             <p class="mt-3 text-3xl font-bold tracking-tight text-slate-950" th:text="${summary.activeServices()}">0</p>
                         </div>
-                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-50 text-lg font-bold text-amber-700">L</div>
+                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-50 text-amber-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 12 12 17 22 12"/><polyline points="2 17 12 22 22 17"/></svg>
+                        </div>
                     </div>
                     <p class="mt-4 text-sm text-slate-500">Paket laundry tersedia</p>
                 </article>
@@ -59,10 +65,12 @@
                 <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                     <div class="flex items-start justify-between gap-4">
                         <div>
-                            <p class="text-sm font-semibold text-slate-500">Inventaris</p>
+                            <p class="text-sm font-semibold text-slate-500">Stock</p>
                             <p class="mt-3 text-3xl font-bold tracking-tight text-slate-950" th:text="${summary.inventoryItems()}">0</p>
                         </div>
-                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-50 text-lg font-bold text-violet-700">I</div>
+                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-50 text-violet-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                        </div>
                     </div>
                     <p class="mt-4 text-sm text-slate-500">Jenis barang stok</p>
                 </article>
@@ -119,14 +127,6 @@
                                 <span class="mt-1 block text-sm text-slate-500">Buat transaksi laundry baru.</span>
                             </a>
                         </div>
-                    </article>
-
-                    <article class="rounded-2xl border border-slate-200 bg-slate-950 p-6 text-white shadow-sm">
-                        <p class="text-sm font-semibold text-cyan-300">Workspace</p>
-                        <h2 class="mt-2 text-xl font-bold" th:if="${role == 'ADMIN'}">Area Admin</h2>
-                        <h2 class="mt-2 text-xl font-bold" th:if="${role == 'STAFF'}">Area Staff</h2>
-                        <p class="mt-2 text-sm leading-6 text-slate-300" th:if="${role == 'ADMIN'}">Master data sudah tersedia untuk staff dan member. Layanan, inventaris, dan laporan bisa ditambahkan berikutnya.</p>
-                        <p class="mt-2 text-sm leading-6 text-slate-300" th:if="${role == 'STAFF'}">Order, pembayaran, dan antrean akan muncul di sini setelah modul operasional dibuat.</p>
                     </article>
                 </aside>
             </section>

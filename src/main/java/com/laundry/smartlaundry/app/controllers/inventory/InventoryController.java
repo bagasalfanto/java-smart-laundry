@@ -31,7 +31,7 @@ public class InventoryController {
     }
 
     @PostMapping("/update")
-    public String updateStok(@RequestParam Long id, @RequestParam String action, @RequestParam int jumlah, RedirectAttributes redirectAttributes) {
+    public String updateStok(@RequestParam Long id, @RequestParam String action, @RequestParam java.math.BigDecimal jumlah, RedirectAttributes redirectAttributes) {
         Inventaris item = inventarisRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Item tidak ditemukan"));
         
         if ("TAMBAH".equalsIgnoreCase(action)) {

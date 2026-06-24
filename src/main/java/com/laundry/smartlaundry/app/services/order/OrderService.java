@@ -43,7 +43,6 @@ public class OrderService {
 				.orElseGet(() -> {
 					Pelanggan p = new Pelanggan();
 					p.setNoTelp(request.getNoHp());
-					p.setPoin(0);
 					return p;
 				});
 
@@ -61,7 +60,7 @@ public class OrderService {
 		BigDecimal diskon = BigDecimal.ZERO;
 		
 		if (Boolean.TRUE.equals(pelanggan.getMember())) {
-			diskon = subtotal.multiply(new BigDecimal("0.10")); // 10% diskon
+			diskon = subtotal.multiply(new BigDecimal("0.05")); // 5% diskon
 		}
 		
 		BigDecimal totalBayar = subtotal.subtract(diskon);
@@ -156,7 +155,7 @@ public class OrderService {
 		BigDecimal diskon = BigDecimal.ZERO;
 		
 		if (Boolean.TRUE.equals(pelanggan.getMember())) {
-			diskon = subtotal.multiply(new BigDecimal("0.10"));
+			diskon = subtotal.multiply(new BigDecimal("0.05"));
 		}
 		
 		BigDecimal totalBayar = subtotal.subtract(diskon);

@@ -22,7 +22,10 @@ public class MemberManagementService {
 		this.transaksiRepository = transaksiRepository;
 	}
 
-	public List<Pelanggan> findAll() {
+	public List<Pelanggan> findAll(String search) {
+		if (search != null && !search.trim().isEmpty()) {
+			return pelangganRepository.findByNamaContainingIgnoreCaseOrNoTelpContainingIgnoreCaseOrderByIdDesc(search, search);
+		}
 		return pelangganRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
 	}
 
@@ -41,7 +44,7 @@ public class MemberManagementService {
 		form.setNama(pelanggan.getNama());
 		form.setNoTelp(pelanggan.getNoTelp());
 		form.setMember(pelanggan.getMember());
-		form.setPoin(pelanggan.getPoin());
+
 		return form;
 	}
 
@@ -85,6 +88,6 @@ public class MemberManagementService {
 		pelanggan.setNama(form.getNama().trim());
 		pelanggan.setNoTelp(form.getNoTelp().trim());
 		pelanggan.setMember(Boolean.TRUE.equals(form.getMember()));
-		pelanggan.setPoin(form.getPoin() == null || form.getPoin() < 0 ? 0 : form.getPoin());
+
 	}
 }

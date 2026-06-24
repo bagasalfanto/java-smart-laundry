@@ -44,7 +44,7 @@ public class DashboardService {
 				inventarisRepository.count(),
 				transaksiRepository.count(),
 				transaksiRepository.countByOrderStatus(OrderStatus.ANTRIAN),
-				transaksiRepository.countByOrderStatus(OrderStatus.PROSES),
+				transaksiRepository.countByOrderStatus(OrderStatus.PROSES_CUCI) + transaksiRepository.countByOrderStatus(OrderStatus.PROSES_SETRIKA),
 				transaksiRepository.countByOrderStatus(OrderStatus.SELESAI),
 				transaksiRepository.countByPaymentStatus(PaymentStatus.LUNAS));
 	}

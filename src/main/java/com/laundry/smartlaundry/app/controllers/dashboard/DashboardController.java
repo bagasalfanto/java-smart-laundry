@@ -27,7 +27,6 @@ public class DashboardController {
 		model.addAttribute("username", authentication.getName());
 		model.addAttribute("role", admin ? "ADMIN" : "STAFF");
 		model.addAttribute("summary", dashboardService.summary());
-		model.addAttribute("recentOrders", transaksiRepository.findTop10ByOrderByCreatedAtDesc());
 
 		return "dashboard/index";
 	}

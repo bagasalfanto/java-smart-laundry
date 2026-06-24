@@ -14,6 +14,8 @@ import com.laundry.smartlaundry.app.dto.order.BookingRequest;
 import com.laundry.smartlaundry.app.models.User;
 import com.laundry.smartlaundry.app.repositories.LayananRepository;
 import com.laundry.smartlaundry.app.repositories.UserRepository;
+import com.laundry.smartlaundry.app.repositories.PelangganRepository;
+import com.laundry.smartlaundry.app.repositories.TransaksiRepository;
 import com.laundry.smartlaundry.app.services.order.OrderService;
 
 import jakarta.validation.Valid;
@@ -25,11 +27,27 @@ public class OrderController {
 	private final OrderService orderService;
 	private final LayananRepository layananRepository;
 	private final UserRepository userRepository;
+	private final TransaksiRepository transaksiRepository;
+	private final PelangganRepository pelangganRepository;
 
-	public OrderController(OrderService orderService, LayananRepository layananRepository, UserRepository userRepository) {
+	public OrderController(OrderService orderService, LayananRepository layananRepository, UserRepository userRepository, TransaksiRepository transaksiRepository, PelangganRepository pelangganRepository) {
 		this.orderService = orderService;
 		this.layananRepository = layananRepository;
 		this.userRepository = userRepository;
+		this.transaksiRepository = transaksiRepository;
+		this.pelangganRepository = pelangganRepository;
+	}
+
+	@GetMapping
+	public String index(@org.springframework.web.bind.annotation.RequestParam(required = false) String search, Model model) {
+		if (search != null && !search.trim().isEmpty()) {
+			model.addAttribute("orders", transaksiRepository.findByInvoiceNumberContainingIgnoreCaseOrPelangganNamaContainingIgnoreCaseOrderByCreatedAtDesc(search, search));
+		} else {
+			model.addAttribute("orders", transaksiRepository.findAllByOrderByCreatedAtDesc());
+		}
+		model.addAttribute("search", search);
+		model.addAttribute("layanans", layananRepository.findByActiveTrue());
+		return "order/index";
 	}
 
 	@GetMapping("/new")
@@ -38,6 +56,7 @@ public class OrderController {
 			model.addAttribute("bookingRequest", new BookingRequest());
 		}
 		model.addAttribute("layanans", layananRepository.findByActiveTrue());
+		model.addAttribute("members", pelangganRepository.findByMemberTrue());
 		return "order/booking";
 	}
 
@@ -59,7 +78,7 @@ public class OrderController {
 		try {
 			orderService.createBooking(request, staff);
 			redirectAttributes.addFlashAttribute("successMessage", "Order berhasil dibuat!");
-			return "redirect:/dashboard";
+			return "redirect:/orders";
 		} catch (Exception e) {
 			model.addAttribute("layanans", layananRepository.findByActiveTrue());
 			model.addAttribute("errorMessage", "Gagal membuat order: " + e.getMessage());
@@ -85,7 +104,9 @@ public class OrderController {
 		}
 		
 		model.addAttribute("layanans", layananRepository.findByActiveTrue());
+		model.addAttribute("members", pelangganRepository.findByMemberTrue());
 		model.addAttribute("transaksiId", id);
+		model.addAttribute("totalBayar", transaksi.getTotalBayar());
 		return "order/edit";
 	}
 
@@ -105,7 +126,7 @@ public class OrderController {
 		try {
 			orderService.updateOrder(id, request);
 			redirectAttributes.addFlashAttribute("successMessage", "Order berhasil diperbarui!");
-			return "redirect:/dashboard";
+			return "redirect:/orders";
 		} catch (Exception e) {
 			model.addAttribute("layanans", layananRepository.findByActiveTrue());
 			model.addAttribute("transaksiId", id);
@@ -122,6 +143,6 @@ public class OrderController {
 		} catch (Exception e) {
 			redirectAttributes.addFlashAttribute("errorMessage", "Gagal menghapus order: " + e.getMessage());
 		}
-		return "redirect:/dashboard";
+		return "redirect:/orders";
 	}
 }

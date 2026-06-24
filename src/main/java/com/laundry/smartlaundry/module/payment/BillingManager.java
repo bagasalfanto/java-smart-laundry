@@ -6,56 +6,22 @@ import java.util.Optional;
 
 import com.laundry.smartlaundry.module.servicecatalog.Layanan;
 
-/**
- * Class BillingManager adalah "otak" dari modul Payment &amp; Billing (bagian Raihan).
- *
- * <p>Class ini menyatukan dua fitur utama:</p>
- * <ol>
- *   <li><b>Billing Logic</b> &rarr; membuat tagihan dan memproses pembayaran,
- *       termasuk perhitungan biaya otomatis berdasarkan berat, jenis layanan,
- *       dan status member.</li>
- *   <li><b>Transaction History</b> &rarr; menyimpan semua transaksi yang sudah
- *       LUNAS, lalu menyediakan fitur pencarian (cari berdasarkan invoice atau
- *       nama/nomor telepon pelanggan).</li>
- * </ol>
- */
+// Pengelola pembayaran + riwayat. Cuma transaksi lunas yang disimpan di sini.
 public class BillingManager {
 
-    /**
-     * Daftar penyimpanan transaksi yang SUDAH LUNAS.
-     * Hanya transaksi lunas yang masuk ke sini, sehingga list ini sekaligus
-     * berperan sebagai "Riwayat Transaksi" (Transaction History).
-     */
     private List<Transaksi> riwayatLunas;
 
     public BillingManager() {
         this.riwayatLunas = new ArrayList<>();
     }
 
-    // ==========================================
-    // FITUR 1: BILLING LOGIC
-    // ==========================================
-
-    /**
-     * Membuat tagihan baru sekaligus menghitung biayanya secara otomatis.
-     *
-     * <p>Urutan kerjanya: buat objek Transaksi &rarr; hitung subtotal
-     * &rarr; terapkan diskon member (jika ada) &rarr; tampilkan rincian.</p>
-     *
-     * @param idOrder   nomor invoice unik
-     * @param pelanggan pelanggan yang melakukan transaksi
-     * @param layanan   paket layanan yang dipilih
-     * @param berat     berat cucian dalam kg
-     * @param tglMasuk  tanggal cucian masuk
-     * @return objek Transaksi yang biayanya sudah dihitung (status: BELUM LUNAS)
-     */
+    // buat tagihan + langsung hitung biayanya
     public Transaksi buatTagihan(String idOrder, Pelanggan pelanggan, Layanan layanan,
                                  double berat, String tglMasuk) {
         Transaksi trx = new Transaksi(idOrder, pelanggan, layanan, berat, tglMasuk);
 
-        // Inilah inti Billing Logic: dua langkah perhitungan.
-        trx.hitungBiaya();      // langkah 1: subtotal = berat x harga/kg
-        trx.terapkanDiskon();   // langkah 2: kurangi diskon member -> total bayar
+        trx.hitungBiaya();
+        trx.terapkanDiskon();
 
         System.out.println("[BILLING] Tagihan " + idOrder + " dibuat untuk "
                 + pelanggan.getNama() + ".");
@@ -64,64 +30,37 @@ public class BillingManager {
         return trx;
     }
 
-    /**
-     * Memproses pembayaran sebuah transaksi.
-     *
-     * <p>Setelah dibayar, status transaksi menjadi LUNAS dan transaksi
-     * langsung DISIMPAN ke dalam riwayat (Transaction History). Member juga
-     * mendapat tambahan poin loyalitas sebagai bonus.</p>
-     *
-     * @param trx transaksi yang ingin dibayar
-     */
+    // proses bayar -> jadi lunas + masuk riwayat
     public void prosesPembayaran(Transaksi trx) {
+        // jangan bayar dua kali
         if (trx.isLunas()) {
             System.out.println("[BILLING] Transaksi " + trx.getIdOrder()
                     + " sudah lunas sebelumnya. Tidak diproses ulang.");
             return;
         }
 
-        // Pastikan biaya sudah dihitung dan masuk akal sebelum menerima pembayaran.
-        // Mencegah transaksi tersimpan dengan total Rp0 (mis. lupa hitung biaya,
-        // atau berat cucian 0 kg). Gunakan buatTagihan() yang sudah menghitung otomatis.
+        // tolak kalau biaya belum dihitung atau totalnya masih 0
         if (!trx.isSudahDihitung() || trx.getTotalBayar() <= 0) {
             System.out.println("[BILLING] Gagal: biaya belum dihitung atau total Rp0 "
                     + "(cek berat cucian). Gunakan buatTagihan() terlebih dahulu.");
             return;
         }
 
-        trx.prosesPembayaran();        // ubah status menjadi LUNAS
-        riwayatLunas.add(trx);         // SIMPAN TRANSAKSI LUNAS ke riwayat
-
-
+        trx.prosesPembayaran();
+        riwayatLunas.add(trx);
 
         System.out.println("[BILLING] Pembayaran " + trx.getIdOrder()
                 + " LUNAS dan tersimpan di riwayat.");
     }
 
-    // ==========================================
-    // FITUR 2: TRANSACTION HISTORY (pencarian transaksi lunas)
-    // ==========================================
-
-    /**
-     * Mencari satu transaksi lunas berdasarkan nomor invoice (pencarian persis).
-     *
-     * @param idOrder nomor invoice yang dicari
-     * @return Optional berisi Transaksi jika ditemukan, atau kosong jika tidak ada
-     */
+    // cari 1 transaksi lewat nomor invoice
     public Optional<Transaksi> cariByInvoice(String idOrder) {
         return riwayatLunas.stream()
                 .filter(trx -> trx.getIdOrder().equalsIgnoreCase(idOrder))
                 .findFirst();
     }
 
-    /**
-     * Mencari transaksi lunas berdasarkan nama ATAU nomor telepon pelanggan.
-     * Pencarian bersifat sebagian (mengandung kata kunci) dan tidak peduli
-     * huruf besar/kecil, sehingga lebih mudah digunakan kasir.
-     *
-     * @param kataKunci potongan nama atau nomor telepon
-     * @return daftar transaksi yang cocok (bisa kosong jika tidak ada)
-     */
+    // cari transaksi lewat nama / no telp (sebagian, abaikan besar-kecil huruf)
     public List<Transaksi> cariByPelanggan(String kataKunci) {
         String kunci = kataKunci.toLowerCase();
         List<Transaksi> hasil = new ArrayList<>();
@@ -136,9 +75,7 @@ public class BillingManager {
         return hasil;
     }
 
-    /**
-     * Menampilkan seluruh riwayat transaksi lunas dalam bentuk daftar rapi.
-     */
+    // tampilkan semua riwayat + totalnya
     public void tampilkanSemuaRiwayat() {
         System.out.println("\n===== RIWAYAT TRANSAKSI LUNAS =====");
         if (riwayatLunas.isEmpty()) {
@@ -158,12 +95,7 @@ public class BillingManager {
         System.out.println("===================================");
     }
 
-    /**
-     * Menjumlahkan total pendapatan dari seluruh transaksi lunas.
-     * Berguna untuk laporan harian (dipakai modul Reporting milik Herdian).
-     *
-     * @return total seluruh pembayaran yang sudah lunas
-     */
+    // jumlahkan pemasukan dari semua transaksi lunas (dipakai modul Reporting)
     public double hitungTotalPendapatan() {
         double total = 0;
         for (Transaksi trx : riwayatLunas) {
@@ -172,9 +104,6 @@ public class BillingManager {
         return total;
     }
 
-    /**
-     * @return jumlah transaksi yang tersimpan di riwayat
-     */
     public int getJumlahRiwayat() {
         return riwayatLunas.size();
     }

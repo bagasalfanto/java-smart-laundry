@@ -5,17 +5,7 @@ import java.util.Optional;
 
 import com.laundry.smartlaundry.module.servicecatalog.Layanan;
 
-/**
- * Class Main untuk mendemonstrasikan modul Payment &amp; Billing (bagian: Raihan).
- *
- * <p>Demo ini membuktikan dua fitur:</p>
- * <ol>
- *   <li><b>Billing Logic</b> &rarr; total biaya dihitung otomatis dari berat,
- *       jenis layanan, dan status member (member dapat diskon).</li>
- *   <li><b>Transaction History</b> &rarr; transaksi lunas disimpan lalu dicari
- *       kembali berdasarkan invoice maupun nama pelanggan.</li>
- * </ol>
- */
+// Demo modul Payment & Billing (bagian Raihan). Jalankan ini buat lihat kedua fitur.
 public class Main {
     public static void main(String[] args) {
         System.out.println("=== SISTEM MANAJEMEN OPERASIONAL LAUNDRY DIGITAL ===");
@@ -23,30 +13,23 @@ public class Main {
 
         BillingManager billing = new BillingManager();
 
-        // --- Data pendukung: paket layanan (dipakai ulang dari modul Shellyn) ---
+        // data layanan (pinjam dari modul Shellyn) & 2 pelanggan: 1 member, 1 bukan
         Layanan cuciSetrika = new Layanan("LYN-02", "Cuci Setrika", 8000.0, 3);
         Layanan paketExpress = new Layanan("LYN-03", "Express 1 Hari", 12000.0, 1);
 
-        // --- Data pendukung: pelanggan (satu member, satu bukan member) ---
-        Pelanggan andi = new Pelanggan("MBR-01", "Andi Wijaya", "081234567890", true);  // member
-        Pelanggan budi = new Pelanggan("MBR-02", "Budi Santoso", "082199998888", false); // bukan member
+        Pelanggan andi = new Pelanggan("MBR-01", "Andi Wijaya", "081234567890", true);
+        Pelanggan budi = new Pelanggan("MBR-02", "Budi Santoso", "082199998888", false);
 
-        // ==========================================
-        // FITUR 1: BILLING LOGIC
-        // ==========================================
+        // --- Fitur 1: hitung biaya otomatis ---
         System.out.println(">>> FITUR 1: BILLING LOGIC (perhitungan biaya otomatis)\n");
 
-        // Andi (MEMBER) laundry 3 kg Cuci Setrika -> harusnya dapat diskon 10%.
         System.out.println("[Skenario] Andi (member) menyetrika 3 kg pakaian.");
         Transaksi trxAndi = billing.buatTagihan("INV-001", andi, cuciSetrika, 3.0, "2026-06-24");
 
-        // Budi (BUKAN member) laundry 2 kg Express -> tidak dapat diskon.
         System.out.println("\n[Skenario] Budi (bukan member) ambil paket Express 2 kg.");
         Transaksi trxBudi = billing.buatTagihan("INV-002", budi, paketExpress, 2.0, "2026-06-24");
 
-        // ==========================================
-        // PROSES PEMBAYARAN + CETAK STRUK
-        // ==========================================
+        // bayar keduanya, lalu cetak struk Andi
         System.out.println("\n>>> PROSES PEMBAYARAN\n");
         billing.prosesPembayaran(trxAndi);
         billing.prosesPembayaran(trxBudi);
@@ -54,15 +37,12 @@ public class Main {
         System.out.println("\n[Skenario] Andi minta dicetakkan struk:");
         trxAndi.cetakStruk();
 
-        // ==========================================
-        // FITUR 2: TRANSACTION HISTORY
-        // ==========================================
+        // --- Fitur 2: simpan & cari ---
         System.out.println("\n>>> FITUR 2: TRANSACTION HISTORY (penyimpanan & pencarian)\n");
 
-        // Tampilkan seluruh riwayat transaksi lunas.
         billing.tampilkanSemuaRiwayat();
 
-        // Pencarian 1: berdasarkan nomor invoice.
+        // cari lewat invoice
         System.out.println("\n[Skenario] Cari transaksi dengan invoice 'INV-002':");
         Optional<Transaksi> hasilInvoice = billing.cariByInvoice("INV-002");
         if (hasilInvoice.isPresent()) {
@@ -73,7 +53,7 @@ public class Main {
             System.out.println("Invoice tidak ditemukan.");
         }
 
-        // Pencarian 2: berdasarkan nama pelanggan.
+        // cari lewat nama
         System.out.println("\n[Skenario] Cari riwayat transaksi atas nama 'Andi':");
         List<Transaksi> hasilNama = billing.cariByPelanggan("Andi");
         if (hasilNama.isEmpty()) {

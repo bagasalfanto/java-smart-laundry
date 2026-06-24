@@ -34,4 +34,8 @@ public interface TransaksiRepository extends JpaRepository<Transaksi, Long> {
 	List<Transaksi> findTop10ByOrderByCreatedAtDesc();
 
 	List<Transaksi> findAllByOrderByCreatedAtDesc();
+
+	List<Transaksi> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+
+	List<Transaksi> findByInvoiceNumberContainingIgnoreCaseOrPelangganNamaContainingIgnoreCaseOrderByCreatedAtDesc(String invoiceNumber, String pelangganNama);
 }

@@ -26,8 +26,9 @@ public class MemberController {
 	}
 
 	@GetMapping
-	public String index(Model model) {
-		model.addAttribute("members", memberManagementService.findAll());
+	public String index(@org.springframework.web.bind.annotation.RequestParam(required = false) String search, Model model) {
+		model.addAttribute("members", memberManagementService.findAll(search));
+		model.addAttribute("search", search);
 		return "member/index";
 	}
 

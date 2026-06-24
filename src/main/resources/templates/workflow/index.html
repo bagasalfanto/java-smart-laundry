@@ -12,7 +12,7 @@
                     <section class="mb-6">
                         <div class="flex items-center gap-4">
                             <div>
-                                <h1 class="text-2xl font-bold tracking-tight text-slate-950">Workflow Manager</h1>
+                                <h1 class="text-2xl font-bold tracking-tight text-slate-950">Prosess Pencucian</h1>
                                 <p class="mt-1 text-sm text-slate-500">Kelola transisi status pencucian pesanan.</p>
                             </div>
                         </div>
@@ -34,7 +34,8 @@
                                     
                                     <!-- Badges Status -->
                                     <span th:if="${order.orderStatus.name() == 'ANTRIAN'}" class="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10">Antrian</span>
-                                    <span th:if="${order.orderStatus.name() == 'PROSES'}" class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">Proses</span>
+                                    <span th:if="${order.orderStatus.name() == 'PROSES_CUCI'}" class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">Proses Cuci</span>
+                                    <span th:if="${order.orderStatus.name() == 'PROSES_SETRIKA'}" class="inline-flex items-center rounded-md bg-amber-50 px-2 py-1 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-700/10">Proses Setrika</span>
                                     <span th:if="${order.orderStatus.name() == 'SELESAI'}" class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Selesai</span>
                                 </div>
                                 
@@ -48,14 +49,21 @@
 
                             <div class="border-t border-slate-100 bg-slate-50 p-4 rounded-b-2xl">
                                 <!-- Action Buttons for Status Transition -->
-                                <form th:if="${order.orderStatus.name() == 'ANTRIAN'}" th:action="@{/workflow/{id}/status(id=${order.id})}" method="post">
-                                    <input type="hidden" name="status" value="PROSES" />
+                                <form th:if="${order.orderStatus.name() == 'ANTRIAN'}" th:action="@{/workflow/{id}/status(id=${order.id})}" method="post" class="form-status-update">
+                                    <input type="hidden" name="status" value="PROSES_CUCI" />
                                     <button type="submit" class="w-full inline-flex justify-center items-center rounded-xl bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
                                         Mulai Cuci
                                     </button>
                                 </form>
                                 
-                                <form th:if="${order.orderStatus.name() == 'PROSES'}" th:action="@{/workflow/{id}/status(id=${order.id})}" method="post">
+                                <form th:if="${order.orderStatus.name() == 'PROSES_CUCI'}" th:action="@{/workflow/{id}/status(id=${order.id})}" method="post" class="form-status-update">
+                                    <input type="hidden" name="status" value="PROSES_SETRIKA" />
+                                    <button type="submit" class="w-full inline-flex justify-center items-center rounded-xl bg-amber-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-amber-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600">
+                                        Mulai Setrika
+                                    </button>
+                                </form>
+
+                                <form th:if="${order.orderStatus.name() == 'PROSES_SETRIKA'}" th:action="@{/workflow/{id}/status(id=${order.id})}" method="post" class="form-status-update">
                                     <input type="hidden" name="status" value="SELESAI" />
                                     <button type="submit" class="w-full inline-flex justify-center items-center rounded-xl bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
                                         Tandai Selesai
@@ -78,4 +86,33 @@
         </div>
     </div>
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const statusForms = document.querySelectorAll('.form-status-update');
+        
+        statusForms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const btn = this.querySelector('button[type="submit"]');
+                const actionName = btn.innerText.trim();
+                
+                Swal.fire({
+                    title: 'Konfirmasi Perubahan Status',
+                    text: `Apakah Anda yakin ingin melakukan "${actionName}" pada pesanan ini?`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#0891b2', // cyan-600
+                    cancelButtonColor: '#cbd5e1', // slate-300
+                    confirmButtonText: 'Ya, Lanjutkan',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        this.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
 </html>

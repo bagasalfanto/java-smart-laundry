@@ -11,4 +11,8 @@ public interface PelangganRepository extends JpaRepository<Pelanggan, Long> {
 	Optional<Pelanggan> findByNoTelp(String noTelp);
 
 	long countByMemberTrue();
+	
+	java.util.List<Pelanggan> findByMemberTrue();
+
+	java.util.List<Pelanggan> findByNamaContainingIgnoreCaseOrNoTelpContainingIgnoreCaseOrderByIdDesc(String nama, String noTelp);
 }

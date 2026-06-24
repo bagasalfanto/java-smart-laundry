@@ -18,6 +18,7 @@ import com.laundry.smartlaundry.app.repositories.TransaksiRepository;
 import com.laundry.smartlaundry.app.services.report.PdfService;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -42,21 +43,58 @@ public class ReportController {
     }
 
     @PostMapping("/generate")
-    public String generateReport(RedirectAttributes redirectAttributes) {
-        LocalDate today = LocalDate.now();
-        List<Transaksi> transaksiHarian = transaksiRepository.findAll();
+    public ResponseEntity<byte[]> generateReport(@RequestParam(defaultValue = "hari") String filter) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime start;
+        LocalDateTime end = now;
+        String periodeDesc;
+        
+        switch (filter.toLowerCase()) {
+            case "minggu":
+                start = now.minusDays(7);
+                periodeDesc = "Mingguan";
+                break;
+            case "bulan":
+                start = now.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0);
+                periodeDesc = "Bulanan";
+                break;
+            case "tahun":
+                start = now.withDayOfYear(1).withHour(0).withMinute(0).withSecond(0);
+                periodeDesc = "Tahunan";
+                break;
+            case "hari":
+            default:
+                start = now.withHour(0).withMinute(0).withSecond(0);
+                periodeDesc = "Harian";
+                break;
+        }
+
+        List<Transaksi> transaksiFilter = transaksiRepository.findByCreatedAtBetween(start, end);
 
         Laporan laporan = new Laporan();
-        laporan.setPeriode("Harian - " + today.toString());
-        laporan.setTanggalMulai(today);
-        laporan.setTanggalSelesai(today);
+        laporan.setPeriode(periodeDesc + " - " + LocalDate.now().toString());
+        laporan.setTanggalMulai(start.toLocalDate());
+        laporan.setTanggalSelesai(end.toLocalDate());
         
         // Memanggil PBO Method untuk menghitung total pendapatan dari transaksi lunas
-        laporan.generateLaporanHarian(transaksiHarian);
+        laporan.generateLaporanHarian(transaksiFilter);
         
+        // Simpan ke DB untuk history (opsional, tapi kita tetap simpan)
         laporanRepository.save(laporan);
-        redirectAttributes.addFlashAttribute("successMessage", "Laporan harian (" + today.toString() + ") berhasil di-generate!");
-        return "redirect:/reports";
+        
+        // Langsung generate PDF dan return
+        laporan.eksporKePDF();
+        byte[] pdfBytes = pdfService.generateLaporanPdf(laporan);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        String filename = "Laporan_" + periodeDesc + "_" + laporan.getTanggalMulai() + ".pdf";
+        headers.setContentDispositionFormData("attachment", filename);
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(pdfBytes);
     }
 
     @PostMapping("/export")

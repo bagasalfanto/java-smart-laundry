@@ -22,6 +22,16 @@
             <div th:if="${error}" id="__swal_error" th:data-msg="${error}" style="display:none"></div>
 
 
+            <div class="mb-4">
+                <form th:action="@{/members}" method="get" class="flex w-full max-w-sm items-center gap-2">
+                    <input type="text" name="search" th:value="${search}" placeholder="Cari nama atau no telp..." class="w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 shadow-sm">
+                    <button type="submit" class="rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white hover:bg-slate-800 shadow-sm transition-colors">Cari</button>
+                    <a th:if="${search != null and !search.isEmpty()}" th:href="@{/members}" class="rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 shadow-sm transition-colors" title="Reset">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </a>
+                </form>
+            </div>
+
             <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-slate-200 text-sm">
@@ -30,7 +40,6 @@
                                 <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Nama</th>
                                 <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-500">No. Telepon</th>
                                 <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Member</th>
-                                <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Poin</th>
                                 <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-slate-500">Aksi</th>
                             </tr>
                         </thead>
@@ -42,7 +51,6 @@
                                     <span class="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700" th:if="${member.member}">Ya</span>
                                     <span class="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-500" th:unless="${member.member}">Tidak</span>
                                 </td>
-                                <td class="whitespace-nowrap px-4 py-4 text-slate-600" th:text="${member.poin}">0</td>
                                 <td class="px-4 py-4">
                                     <div class="flex flex-wrap gap-2">
                                     <a th:href="@{/members/{id}/edit(id=${member.id})}" class="inline-flex h-9 items-center rounded-md border border-slate-200 bg-white px-3 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">Edit</a>
@@ -58,7 +66,7 @@
                                 </td>
                             </tr>
                             <tr th:if="${#lists.isEmpty(members)}">
-                                <td colspan="5" class="px-4 py-10 text-center text-sm text-slate-500">Belum ada data member.</td>
+                                <td colspan="4" class="px-4 py-10 text-center text-sm text-slate-500">Belum ada data member.</td>
                             </tr>
                         </tbody>
                     </table>

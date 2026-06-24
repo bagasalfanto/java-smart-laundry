@@ -17,7 +17,7 @@ public class Pelanggan {
     private String nama;       // nama pelanggan, contoh: "Andi"
     private String noTelp;     // nomor telepon, dipakai untuk mencari pelanggan
     private boolean member;    // true = member (dapat diskon), false = pelanggan biasa
-    private int poin;          // poin loyalitas yang dikumpulkan member
+
 
     /**
      * Constructor untuk membuat objek Pelanggan baru.
@@ -32,7 +32,7 @@ public class Pelanggan {
         this.nama = nama;
         this.noTelp = noTelp;
         this.member = member;
-        this.poin = 0; // pelanggan baru selalu mulai dari 0 poin
+
     }
 
     // ==========================================
@@ -48,17 +48,6 @@ public class Pelanggan {
      */
     public boolean cekStatusMember() {
         return member;
-    }
-
-    /**
-     * Menambah poin loyalitas pelanggan (misalnya setelah pembayaran lunas).
-     *
-     * @param tambahan jumlah poin yang ingin ditambahkan
-     */
-    public void tambahPoin(int tambahan) {
-        if (tambahan > 0) {
-            this.poin += tambahan;
-        }
     }
 
     // ==========================================
@@ -97,7 +86,4 @@ public class Pelanggan {
         this.member = member;
     }
 
-    public int getPoin() {
-        return poin;
-    }
 }

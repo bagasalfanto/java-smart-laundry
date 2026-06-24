@@ -109,12 +109,12 @@
                         </a>
                     </li>
                     <li>
-                        <span class="menu-item menu-item-disabled group">
-                            <svg class="menu-item-icon menu-item-icon-disabled" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <a th:href="@{/payments}" th:classappend="${#strings.startsWith(currentPath, '/payments')} ? ' menu-item-active' : ' menu-item-inactive'" class="menu-item group">
+                            <svg th:classappend="${#strings.startsWith(currentPath, '/payments')} ? ' menu-item-icon-active' : ' menu-item-icon-inactive'" class="menu-item-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M4.25 6.5C4.25 5.25736 5.25736 4.25 6.5 4.25H17.5C18.7426 4.25 19.75 5.25736 19.75 6.5V17.5C19.75 18.7426 18.7426 19.75 17.5 19.75H6.5C5.25736 19.75 4.25 18.7426 4.25 17.5V6.5ZM6.5 5.75C6.08579 5.75 5.75 6.08579 5.75 6.5V8.25H18.25V6.5C18.25 6.08579 17.9142 5.75 17.5 5.75H6.5ZM18.25 9.75H5.75V17.5C5.75 17.9142 6.08579 18.25 6.5 18.25H17.5C17.9142 18.25 18.25 17.9142 18.25 17.5V9.75ZM8.25 14C8.25 13.5858 8.58579 13.25 9 13.25H12C12.4142 13.25 12.75 13.5858 12.75 14C12.75 14.4142 12.4142 14.75 12 14.75H9C8.58579 14.75 8.25 14.4142 8.25 14Z" fill="currentColor"></path>
                             </svg>
                             <span class="menu-item-text">Pembayaran</span>
-                        </span>
+                        </a>
                     </li>
                 </ul>
             </div>

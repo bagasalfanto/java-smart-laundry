@@ -1,59 +1,27 @@
 package com.laundry.smartlaundry.module.payment;
 
-/**
- * Class Pelanggan merepresentasikan data pelanggan laundry.
- *
- * <p>Yang paling penting bagi modul Payment & Billing adalah atribut
- * {@code member}. Kalau pelanggan adalah member, nanti dia berhak
- * mendapatkan diskon otomatis saat menghitung total biaya.</p>
- *
- * <p>Class ini sengaja dibuat sederhana agar mudah dipahami oleh
- * teman-teman yang baru belajar Pemrograman Berorientasi Objek (PBO).</p>
- */
+// Data pelanggan. Yang penting di sini status member-nya,
+// soalnya member dapat diskon pas hitung total.
 public class Pelanggan {
 
-    // --- Atribut (data milik setiap objek Pelanggan) ---
-    private String idMember;   // ID unik pelanggan, contoh: "MBR-01"
-    private String nama;       // nama pelanggan, contoh: "Andi"
-    private String noTelp;     // nomor telepon, dipakai untuk mencari pelanggan
-    private boolean member;    // true = member (dapat diskon), false = pelanggan biasa
+    private String idMember;   // contoh: "MBR-01"
+    private String nama;
+    private String noTelp;     // dipakai buat nyari pelanggan
+    private boolean member;    // true = member (dapat diskon)
 
-
-    /**
-     * Constructor untuk membuat objek Pelanggan baru.
-     *
-     * @param idMember ID unik pelanggan (contoh: "MBR-01")
-     * @param nama     nama pelanggan
-     * @param noTelp   nomor telepon pelanggan
-     * @param member   status keanggotaan: true jika member, false jika bukan
-     */
     public Pelanggan(String idMember, String nama, String noTelp, boolean member) {
         this.idMember = idMember;
         this.nama = nama;
         this.noTelp = noTelp;
         this.member = member;
-
     }
 
-    // ==========================================
-    // METHOD KHUSUS
-    // ==========================================
-
-    /**
-     * Mengecek apakah pelanggan ini seorang member atau bukan.
-     * Method inilah yang dipakai oleh proses billing untuk memutuskan
-     * apakah diskon member perlu diberikan.
-     *
-     * @return true jika pelanggan adalah member
-     */
+    // true kalau member -> dipakai buat nentuin diskon
     public boolean cekStatusMember() {
         return member;
     }
 
-    // ==========================================
-    // GETTER & SETTER (cara aman mengakses data privat)
-    // ==========================================
-
+    // getter & setter
     public String getIdMember() {
         return idMember;
     }

@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Stock Monitor - Smart Laundry')}"></head>
+<body class="app-shell bg-slate-50 text-slate-900" data-app-shell>
+    <div class="flex h-screen overflow-hidden">
+        <div th:replace="~{layout/sidebar :: sidebar}"></div>
+        <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+            <div data-sidebar-overlay class="app-sidebar-overlay fixed inset-0 z-[9] hidden bg-slate-900/50 backdrop-blur-sm transition-opacity lg:hidden"></div>
+            <div th:replace="~{layout/navbar :: navbar}"></div>
+            <main>
+                <div class="mx-auto max-w-7xl p-4 md:p-8">
+                    <!-- Header -->
+                    <section class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <h1 class="text-3xl font-extrabold tracking-tight text-slate-900">Stock Monitor</h1>
+                            <p class="mt-2 text-sm text-slate-500">Kelola persediaan bahan operasional secara real-time.</p>
+                        </div>
+                    </section>
+
+                    <!-- Alerts -->
+                    <div th:if="${successMessage}" class="mb-6 flex items-center gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-medium text-emerald-800 shadow-sm">
+                        <svg class="h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span th:text="${successMessage}"></span>
+                    </div>
+                    <div th:if="${errorMessage}" class="mb-6 flex items-center gap-3 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm font-medium text-rose-800 shadow-sm">
+                        <svg class="h-5 w-5 text-rose-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <span th:text="${errorMessage}"></span>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div th:if="${#lists.isEmpty(items)}" class="flex flex-col items-center justify-center rounded-3xl border border-dashed border-slate-300 bg-white py-20 px-6 text-center shadow-sm">
+                        <div class="rounded-full bg-slate-50 p-4">
+                            <svg class="h-10 w-10 text-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5m8.25 3v6.75m0 0l-3-3m3 3l3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                            </svg>
+                        </div>
+                        <h3 class="mt-4 text-lg font-semibold text-slate-900">Belum Ada Perlengkapan</h3>
+                        <p class="mt-1 text-sm text-slate-500">Daftar inventaris kosong. Silakan tambahkan dari master data.</p>
+                    </div>
+
+                    <!-- Cards Grid -->
+                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        <div th:each="item : ${items}" class="group flex flex-col justify-between rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:ring-cyan-300">
+                            
+                            <!-- Card Header -->
+                            <div class="flex items-start gap-4">
+                                <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-cyan-50 text-cyan-600 transition-transform duration-300 group-hover:scale-110 group-hover:bg-cyan-100">
+                                    <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M12 3v4.5m0 0l-3-3m3 3l3-3M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-slate-900" th:text="${item.namaBarang}">Nama Barang</h3>
+                                    <span class="mt-1.5 inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-600 ring-1 ring-inset ring-slate-200" th:text="'Satuan: ' + ${item.satuan}">Satuan</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Stock Display -->
+                            <div class="mt-8 mb-2">
+                                <div class="flex items-baseline gap-2">
+                                    <span class="text-4xl font-extrabold tracking-tight text-slate-900" th:text="${item.stok}">0</span>
+                                    <span class="text-sm font-semibold text-slate-500" th:text="${item.satuan}">pcs</span>
+                                </div>
+                                <p class="mt-1 text-xs font-medium text-slate-400 uppercase tracking-wider">Sisa Stok Saat Ini</p>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="mt-6 border-t border-slate-100 pt-6">
+                                <form th:id="'form-' + ${item.id}" th:action="@{/inventory/update}" method="post" class="flex flex-col gap-4">
+                                    <input type="hidden" name="id" th:value="${item.id}">
+                                    
+                                    <div class="relative">
+                                        <input type="number" name="jumlah" min="0.01" step="0.01" value="1" class="block w-full rounded-xl border-0 py-2.5 px-4 pr-12 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm sm:leading-6 font-medium transition-shadow" required>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+                                            <span class="text-slate-400 sm:text-sm font-medium" th:text="${item.satuan}">pcs</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex gap-3">
+                                        <button type="submit" name="action" value="TAMBAH" class="flex-1 rounded-xl bg-slate-900 px-3 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900">
+                                            Tambah
+                                        </button>
+                                        <button type="button" th:attr="onclick='showModal(\'form-' + ${item.id} + '\', \'' + ${item.namaBarang} + '\', \'' + ${item.satuan} + '\')'" class="flex-1 rounded-xl bg-white px-3 py-2.5 text-sm font-semibold text-rose-600 shadow-sm ring-1 ring-inset ring-rose-200 hover:bg-rose-50 hover:ring-rose-300 transition-colors">
+                                            Kurangi
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Custom Tailwind Modal -->
+    <div id="confirmModal" class="fixed inset-0 z-[100] hidden items-center justify-center transition-opacity" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <!-- Backdrop -->
+        <div id="modalBackdrop" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
+
+        <!-- Modal Panel -->
+        <div id="modalPanel" class="relative z-10 w-full max-w-md transform overflow-hidden rounded-3xl bg-white p-6 text-left shadow-2xl opacity-0 scale-95 transition-all duration-300 sm:my-8 sm:p-8">
+            <div class="sm:flex sm:items-start">
+                <div class="mx-auto flex h-16 w-16 flex-shrink-0 items-center justify-center rounded-full bg-rose-100 sm:mx-0 sm:h-12 sm:w-12">
+                    <svg class="h-8 w-8 text-rose-600 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                </div>
+                <div class="mt-4 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                    <h3 class="text-xl font-bold leading-6 text-slate-900" id="modal-title">Konfirmasi Kurangi Stok</h3>
+                    <div class="mt-3">
+                        <p class="text-sm text-slate-500 leading-relaxed" id="confirmText">
+                            Apakah Anda yakin ingin mengurangi stok ini?
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                <button type="button" onclick="closeModal()" class="inline-flex w-full justify-center rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 sm:w-auto transition-colors">
+                    Batal
+                </button>
+                <button type="button" id="confirmBtn" class="inline-flex w-full justify-center rounded-xl bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-rose-500 sm:w-auto transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600">
+                    Ya, Kurangi Stok
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script for Modal -->
+    <script>
+        let currentForm = null;
+
+        function showModal(formId, itemName, itemUnit) {
+            const form = document.getElementById(formId);
+            const amountInput = form.querySelector('input[name="jumlah"]');
+            const amount = amountInput.value;
+            
+            if (!amount || amount <= 0) {
+                alert('Silakan masukkan jumlah stok yang valid.');
+                return;
+            }
+
+            document.getElementById('confirmText').innerHTML = `Apakah Anda yakin ingin mengurangi stok <strong class="text-slate-800">${itemName}</strong> sebanyak <strong class="text-rose-600">${amount} ${itemUnit}</strong>? Tindakan ini akan mengubah persediaan saat ini.`;
+            currentForm = form;
+            
+            const modal = document.getElementById('confirmModal');
+            const backdrop = document.getElementById('modalBackdrop');
+            const panel = document.getElementById('modalPanel');
+            
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            // Trigger animations
+            requestAnimationFrame(() => {
+                backdrop.classList.remove('opacity-0');
+                backdrop.classList.add('opacity-100');
+                
+                panel.classList.remove('opacity-0', 'scale-95');
+                panel.classList.add('opacity-100', 'scale-100');
+            });
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('confirmModal');
+            const backdrop = document.getElementById('modalBackdrop');
+            const panel = document.getElementById('modalPanel');
+            
+            // Reverse animations
+            backdrop.classList.remove('opacity-100');
+            backdrop.classList.add('opacity-0');
+            
+            panel.classList.remove('opacity-100', 'scale-100');
+            panel.classList.add('opacity-0', 'scale-95');
+            
+            setTimeout(() => {
+                modal.classList.remove('flex');
+                modal.classList.add('hidden');
+                currentForm = null;
+            }, 300);
+        }
+
+        document.getElementById('confirmBtn').addEventListener('click', () => {
+            if (currentForm) {
+                // Prevent double clicks
+                document.getElementById('confirmBtn').disabled = true;
+                document.getElementById('confirmBtn').classList.add('opacity-50', 'cursor-not-allowed');
+                
+                // Add action input and submit
+                const actionInput = document.createElement('input');
+                actionInput.type = 'hidden';
+                actionInput.name = 'action';
+                actionInput.value = 'KURANG';
+                currentForm.appendChild(actionInput);
+                currentForm.submit();
+            }
+        });
+    </script>
+</body>
+</html>

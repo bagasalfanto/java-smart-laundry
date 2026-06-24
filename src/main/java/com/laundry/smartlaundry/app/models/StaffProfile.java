@@ -2,6 +2,8 @@ package com.laundry.smartlaundry.app.models;
 
 import java.time.LocalDateTime;
 
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -39,4 +41,18 @@ public class StaffProfile {
 
 	@Column(name = "updated_at", nullable = false, insertable = false, updatable = false)
 	private LocalDateTime updatedAt;
+
+	// --- PBO Methods ---
+	public void inputOrder(Transaksi transaksiBaru, List<Inventaris> bahanBakuYangDipakai) {
+		System.out.println("Memproses pesanan baru: " + transaksiBaru.getInvoiceNumber());
+		for (Inventaris bahan : bahanBakuYangDipakai) {
+			bahan.kurangiStok(java.math.BigDecimal.ONE); // Asumsi 1 pesanan mengurangi 1 satuan bahan
+		}
+	}
+
+	public void selesaikanPembayaran(Transaksi transaksi) {
+		transaksi.setPaymentStatus(com.laundry.smartlaundry.app.enums.PaymentStatus.LUNAS);
+		System.out.println("Pembayaran diterima oleh Staff.");
+		transaksi.cetakStruk();
+	}
 }

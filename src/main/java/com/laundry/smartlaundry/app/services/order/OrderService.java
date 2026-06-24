@@ -1,6 +1,7 @@
 package com.laundry.smartlaundry.app.services.order;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
@@ -9,10 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.laundry.smartlaundry.app.dto.order.BookingRequest;
+import com.laundry.smartlaundry.app.models.Inventaris;
 import com.laundry.smartlaundry.app.models.Layanan;
 import com.laundry.smartlaundry.app.models.Pelanggan;
 import com.laundry.smartlaundry.app.models.Transaksi;
 import com.laundry.smartlaundry.app.models.User;
+import com.laundry.smartlaundry.app.repositories.InventarisRepository;
 import com.laundry.smartlaundry.app.repositories.LayananRepository;
 import com.laundry.smartlaundry.app.repositories.PelangganRepository;
 import com.laundry.smartlaundry.app.repositories.TransaksiRepository;
@@ -23,11 +26,14 @@ public class OrderService {
 	private final TransaksiRepository transaksiRepository;
 	private final PelangganRepository pelangganRepository;
 	private final LayananRepository layananRepository;
+	private final InventarisRepository inventarisRepository;
 
-	public OrderService(TransaksiRepository transaksiRepository, PelangganRepository pelangganRepository, LayananRepository layananRepository) {
+	public OrderService(TransaksiRepository transaksiRepository, PelangganRepository pelangganRepository, 
+			LayananRepository layananRepository, InventarisRepository inventarisRepository) {
 		this.transaksiRepository = transaksiRepository;
 		this.pelangganRepository = pelangganRepository;
 		this.layananRepository = layananRepository;
+		this.inventarisRepository = inventarisRepository;
 	}
 
 	@Transactional
@@ -71,7 +77,57 @@ public class OrderService {
 		transaksi.setDiskon(diskon);
 		transaksi.setTotalBayar(totalBayar);
 		
-		return transaksiRepository.save(transaksi);
+		Transaksi savedTransaksi = transaksiRepository.save(transaksi);
+		
+		// 5. Deduct Inventory
+		deductInventoryForOrder(berat);
+
+		return savedTransaksi;
+	}
+
+	private void deductInventoryForOrder(BigDecimal berat) {
+		Iterable<Inventaris> allInventaris = inventarisRepository.findAll();
+		
+		for (Inventaris inv : allInventaris) {
+			String name = inv.getNamaBarang().toLowerCase();
+			String satuan = inv.getSatuan().toLowerCase();
+			BigDecimal amountToDeduct = BigDecimal.ZERO;
+			
+			// Deterjen: 100gr per kg order
+			if (name.contains("deterj") || name.contains("deterg")) {
+				amountToDeduct = berat.multiply(new BigDecimal("100"));
+				if (satuan.equals("kg") || satuan.equals("kilogram")) {
+					amountToDeduct = amountToDeduct.divide(new BigDecimal("1000"), 4, RoundingMode.HALF_UP);
+				}
+			} 
+			// Pewangi Setrika: 50ml per kg order
+			else if ((name.contains("pewangi") || name.contains("pelicin")) && (name.contains("strika") || name.contains("setrika"))) {
+				amountToDeduct = berat.multiply(new BigDecimal("50"));
+				if (satuan.equals("l") || satuan.equals("liter")) {
+					amountToDeduct = amountToDeduct.divide(new BigDecimal("1000"), 4, RoundingMode.HALF_UP);
+				}
+			}
+			// Pewangi biasa: 100ml per kg order
+			else if (name.contains("pewangi")) {
+				amountToDeduct = berat.multiply(new BigDecimal("100"));
+				if (satuan.equals("l") || satuan.equals("liter")) {
+					amountToDeduct = amountToDeduct.divide(new BigDecimal("1000"), 4, RoundingMode.HALF_UP);
+				}
+			} 
+			// Plastik kresek: 1 pcs per 6 kg
+			else if (name.contains("kresek")) {
+				amountToDeduct = new BigDecimal(Math.ceil(berat.doubleValue() / 6.0));
+			}
+			// Plastik biasa: 1 pcs per 3 kg
+			else if (name.contains("plastik")) {
+				amountToDeduct = new BigDecimal(Math.ceil(berat.doubleValue() / 3.0));
+			}
+
+			if (amountToDeduct.compareTo(BigDecimal.ZERO) > 0) {
+				inv.kurangiStok(amountToDeduct);
+				inventarisRepository.save(inv);
+			}
+		}
 	}
 
 	public Transaksi getOrder(Long id) {

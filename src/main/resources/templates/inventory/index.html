@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/base :: head('Stock Monitor - Smart Laundry')}"></head>
+<body class="app-shell bg-gray-50 text-gray-900" data-app-shell>
+    <div class="flex h-screen overflow-hidden">
+        <div th:replace="~{layout/sidebar :: sidebar}"></div>
+        <div class="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+            <div data-sidebar-overlay class="app-sidebar-overlay fixed inset-0 z-[9] hidden bg-gray-900/50 lg:hidden"></div>
+            <div th:replace="~{layout/navbar :: navbar}"></div>
+            <main>
+                <div class="mx-auto max-w-[1000px] p-4 md:p-6">
+                    <section class="mb-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h1 class="text-2xl font-bold tracking-tight text-slate-950">Stock Monitor</h1>
+                                <p class="mt-1 text-sm text-slate-500">Kelola persediaan bahan operasional (sabun, pewangi, dll).</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div th:if="${successMessage}" class="mb-6 rounded-xl border border-green-200 bg-green-50 p-4 text-sm text-green-600">
+                        <span th:text="${successMessage}"></span>
+                    </div>
+                    <div th:if="${errorMessage}" class="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600">
+                        <span th:text="${errorMessage}"></span>
+                    </div>
+
+                    <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+                        <table class="w-full text-left text-sm text-slate-600">
+                            <thead class="bg-slate-50 text-slate-900 border-b border-slate-200">
+                                <tr>
+                                    <th class="px-6 py-4 font-semibold">Nama Perlengkapan</th>
+                                    <th class="px-6 py-4 font-semibold">Sisa Stok</th>
+                                    <th class="px-6 py-4 font-semibold text-right">Kelola Stok (Tambah/Kurang)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200">
+                                <tr th:each="item : ${items}" class="hover:bg-slate-50 transition">
+                                    <td class="px-6 py-4 font-medium text-slate-900" th:text="${item.namaBarang}"></td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center rounded-full bg-cyan-50 px-2.5 py-0.5 text-xs font-semibold text-cyan-700 ring-1 ring-inset ring-cyan-600/20" th:text="${item.stok + ' ' + item.satuan}"></span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <form th:action="@{/inventory/update}" method="post" class="flex items-center justify-end gap-2">
+                                            <input type="hidden" name="id" th:value="${item.id}">
+                                            <input type="number" name="jumlah" min="1" value="1" class="w-20 rounded-lg border-slate-300 py-1.5 px-2.5 text-sm ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-inset focus:ring-cyan-600" required>
+                                            <button type="submit" name="action" value="TAMBAH" class="rounded-lg bg-cyan-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-cyan-500 shadow-sm transition">Tambah Stok</button>
+                                            <button type="submit" name="action" value="KURANG" class="rounded-lg bg-rose-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-rose-500 shadow-sm transition">Kurangi Stok</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(items)}">
+                                    <td colspan="3" class="px-6 py-8 text-center text-slate-500">Belum ada daftar perlengkapan.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</body>
+</html>

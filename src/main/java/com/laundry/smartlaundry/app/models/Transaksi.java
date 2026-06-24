@@ -79,4 +79,19 @@ public class Transaksi {
 
 	@Column(name = "updated_at", nullable = false, insertable = false, updatable = false)
 	private LocalDateTime updatedAt;
+
+	// --- PBO Methods ---
+	public void cetakStruk() {
+		if (this.paymentStatus == PaymentStatus.LUNAS) {
+			System.out.println("=====================================");
+			System.out.println("         STRUK SMART LAUNDRY         ");
+			System.out.println("=====================================");
+			System.out.println("Invoice      : " + this.invoiceNumber);
+			System.out.println("Total Bayar  : Rp" + this.totalBayar);
+			System.out.println("Status       : LUNAS");
+			System.out.println("=====================================");
+		} else {
+			System.out.println("Gagal mencetak struk: Transaksi belum lunas!");
+		}
+	}
 }

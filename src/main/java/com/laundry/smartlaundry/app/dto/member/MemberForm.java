@@ -20,6 +20,4 @@ public class MemberForm {
 
 	private Boolean member = false;
 
-	@Min(value = 0, message = "Poin tidak boleh negatif")
-	private Integer poin = 0;
 }

@@ -2,6 +2,7 @@ package com.laundry.smartlaundry.app.enums;
 
 public enum OrderStatus {
 	ANTRIAN,
-	PROSES,
+	PROSES_CUCI,
+	PROSES_SETRIKA,
 	SELESAI
 }

@@ -30,8 +30,6 @@ public class Pelanggan {
 	@Column(name = "is_member", nullable = false)
 	private Boolean member = false;
 
-	@Column(name = "poin", nullable = false)
-	private Integer poin = 0;
 
 	@Column(name = "created_at", nullable = false, insertable = false, updatable = false)
 	private LocalDateTime createdAt;

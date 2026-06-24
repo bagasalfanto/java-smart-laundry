@@ -88,9 +88,9 @@ public class DatabaseSeeder {
 	}
 
 	private void seedLayanan() {
-		ensureLayanan("Cuci Kering", new BigDecimal("7000.00"), 24);
-		ensureLayanan("Cuci Setrika", new BigDecimal("10000.00"), 48);
-		ensureLayanan("Express", new BigDecimal("15000.00"), 12);
+		ensureLayanan("Cuci Setrika Reguler", new BigDecimal("5000.00"), 36);
+		ensureLayanan("Cuci Setrika Kilat", new BigDecimal("7500.00"), 24);
+		ensureLayanan("Cuci Setrika Express", new BigDecimal("10000.00"), 12);
 	}
 
 	private void ensureLayanan(String namaPaket, BigDecimal hargaPerKg, int estimasiWaktu) {
@@ -104,12 +104,14 @@ public class DatabaseSeeder {
 	}
 
 	private void seedInventaris() {
-		ensureInventaris("Deterjen", 50, "kg");
-		ensureInventaris("Pewangi", 50, "liter");
-		ensureInventaris("Plastik", 100, "pcs");
+		ensureInventaris("Deterjen", new BigDecimal("50.0"), "kg");
+		ensureInventaris("Pewangi Sabun", new BigDecimal("50.0"), "liter");
+		ensureInventaris("Pewangi Setrika", new BigDecimal("200.0"), "liter");
+		ensureInventaris("Plastik", new BigDecimal("100.0"), "pcs");
+		ensureInventaris("Kantong Kresek", new BigDecimal("50.0"), "pcs");
 	}
 
-	private void ensureInventaris(String namaBarang, int stok, String satuan) {
+	private void ensureInventaris(String namaBarang, BigDecimal stok, String satuan) {
 		if (exists("SELECT COUNT(*) FROM inventaris WHERE nama_barang = ?", namaBarang)) {
 			return;
 		}

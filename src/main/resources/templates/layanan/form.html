@@ -31,7 +31,8 @@
                         <div class="grid gap-6 sm:grid-cols-2">
                             <div class="sm:col-span-2">
                                 <label for="idLayanan" class="mb-2 block text-sm font-semibold text-slate-700">ID Layanan</label>
-                                <input id="idLayanan" type="text" name="idLayanan" th:value="${layanan.idLayanan}" th:readonly="${mode == 'edit'}" th:classappend="${mode == 'edit'} ? 'bg-slate-100 text-slate-500' : 'bg-white text-slate-900'" class="block w-full rounded-xl border-0 py-2.5 px-3 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-cyan-600 sm:text-sm" placeholder="Contoh: LYN-01" required>
+                                <input th:if="${mode == 'edit'}" type="hidden" name="id" th:value="${layanan.id}">
+                                <input id="idLayanan" type="text" th:value="${layanan.id != null ? layanan.id : ''}" readonly class="block w-full rounded-xl border-0 py-2.5 px-3 bg-slate-100 text-slate-500 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 sm:text-sm" placeholder="Otomatis Dibuat">
                             </div>
 
                             <div class="sm:col-span-2">

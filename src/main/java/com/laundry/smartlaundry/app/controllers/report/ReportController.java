@@ -29,7 +29,8 @@ public class ReportController {
     private final TransaksiRepository transaksiRepository;
     private final PdfService pdfService;
 
-    public ReportController(LaporanRepository laporanRepository, TransaksiRepository transaksiRepository, PdfService pdfService) {
+    public ReportController(LaporanRepository laporanRepository, TransaksiRepository transaksiRepository,
+            PdfService pdfService) {
         this.laporanRepository = laporanRepository;
         this.transaksiRepository = transaksiRepository;
         this.pdfService = pdfService;
@@ -48,7 +49,7 @@ public class ReportController {
         LocalDateTime start;
         LocalDateTime end = now;
         String periodeDesc;
-        
+
         switch (filter.toLowerCase()) {
             case "minggu":
                 start = now.minusDays(7);
@@ -75,13 +76,13 @@ public class ReportController {
         laporan.setPeriode(periodeDesc + " - " + LocalDate.now().toString());
         laporan.setTanggalMulai(start.toLocalDate());
         laporan.setTanggalSelesai(end.toLocalDate());
-        
+
         // Memanggil PBO Method untuk menghitung total pendapatan dari transaksi lunas
         laporan.generateLaporanHarian(transaksiFilter);
-        
+
         // Simpan ke DB untuk history (opsional, tapi kita tetap simpan)
         laporanRepository.save(laporan);
-        
+
         // Langsung generate PDF dan return
         laporan.eksporKePDF();
         byte[] pdfBytes = pdfService.generateLaporanPdf(laporan);
@@ -99,11 +100,12 @@ public class ReportController {
 
     @PostMapping("/export")
     public ResponseEntity<byte[]> exportPdf(@RequestParam Long id) {
-        Laporan laporan = laporanRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Laporan tidak ditemukan"));
-        
+        Laporan laporan = laporanRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Laporan tidak ditemukan"));
+
         // Memanggil PBO Method untuk mencatat log
         laporan.eksporKePDF();
-        
+
         // Generate PDF
         byte[] pdfBytes = pdfService.generateLaporanPdf(laporan);
 
@@ -119,4 +121,3 @@ public class ReportController {
                 .body(pdfBytes);
     }
 }
-

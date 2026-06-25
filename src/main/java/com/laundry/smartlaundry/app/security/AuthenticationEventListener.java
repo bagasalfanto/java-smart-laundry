@@ -5,15 +5,20 @@ import org.springframework.security.authentication.event.AuthenticationFailureBa
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.stereotype.Component;
 
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
+
+import com.laundry.smartlaundry.app.services.admin.ActivityLogService;
 import com.laundry.smartlaundry.app.services.auth.LoginAttemptService;
 
 @Component
 public class AuthenticationEventListener {
 
 	private final LoginAttemptService loginAttemptService;
+	private final ActivityLogService activityLogService;
 
-	public AuthenticationEventListener(LoginAttemptService loginAttemptService) {
+	public AuthenticationEventListener(LoginAttemptService loginAttemptService, ActivityLogService activityLogService) {
 		this.loginAttemptService = loginAttemptService;
+		this.activityLogService = activityLogService;
 	}
 
 	@EventListener
@@ -23,6 +28,15 @@ public class AuthenticationEventListener {
 
 	@EventListener
 	public void onAuthenticationSuccess(AuthenticationSuccessEvent event) {
-		loginAttemptService.recordSuccess(event.getAuthentication().getName());
+		String username = event.getAuthentication().getName();
+		loginAttemptService.recordSuccess(username);
+
+		String ipAddress = null;
+		Object details = event.getAuthentication().getDetails();
+		if (details instanceof WebAuthenticationDetails) {
+			ipAddress = ((WebAuthenticationDetails) details).getRemoteAddress();
+		}
+
+		activityLogService.logLoginSuccess(username, ipAddress);
 	}
 }

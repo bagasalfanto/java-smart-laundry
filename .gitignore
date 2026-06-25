@@ -55,3 +55,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Catatan pribadi (jangan di-commit) ###
+.notesraihan/
